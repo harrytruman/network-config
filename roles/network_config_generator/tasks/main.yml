@@ -1,0 +1,13 @@
+---
+- name: set config output directories
+  file:
+      path: /var/tmp/{{ item }}
+      state: directory
+  loop:
+    - config
+    - backup
+
+- name: generate config file
+  template:
+    src: templates/{{ ansible_network_os }}.j2
+    dest: /var/tmp/config/{{ ansible_network_os }}.j2

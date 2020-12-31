@@ -1,0 +1,31 @@
+#- name: Configure VLANs 
+#  ios_vlans:
+#    config:
+#      - vlan_id: "{{ item['vlan_id'] }}"
+#        name: "{{ item['vlan_name'] }}"
+#    state: replaced 
+#  when: vlan_config is defined
+#  loop: "{{ vlan_config }}"
+
+- name: Configure Interface Settings
+  ios_interfaces:
+    config:
+      - name: "{{ item['interface'] }}"
+        description: "{{ item['description'] }}"
+        enabled: "{{ item['enabled'] }}"
+    state: replaced
+  loop: "{{ interface_config }}"
+  when: (interface_config is defined and (item['enabled'] == True))
+
+- name: Configure Port Channels
+  ios_lag_interfaces:
+    config:
+      - name: "{{ item['interface'] }}"
+        members: "{{ item['members'] }}"
+    state: replaced
+  loop: "{{ interface_config }}"
+#  when: port-channel in item['interface']
+
+- name: Configure Prefix Lists
+  ios_config:
+    src: prefix-list/AWS-AF-DEV-DATABRICKS.j2

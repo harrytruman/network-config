@@ -1,0 +1,8 @@
+---
+- name: configure interfaces from templates and push to devices
+  hosts: all
+  connection: "{{ ansible_connection | default(network_cli) }}"
+  gather_facts: yes
+
+  roles:
+    - network_config_mgmt

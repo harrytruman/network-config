@@ -1,0 +1,20 @@
+vlan_config:
+- vlan_id: 670
+  vlan_name: test
+
+interface_config:
+- interface: port-channel20.670
+  description: ansible
+  ip_address: "{{ pc_ip_address }}"
+  mode: layer3
+  enabled: true
+  vlans: 670
+  encapsulation: dot1q
+  echo_rx_interval: 50
+  interval:
+    - tx: 300
+    - min_rx: 300
+    - multiplier: 3
+  members:
+    - member: GigabitEthernet10
+      mode: auto

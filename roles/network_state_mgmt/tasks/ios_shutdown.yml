@@ -1,0 +1,11 @@
+---
+- name: Shut down unused interfaces
+  ios_interfaces:
+    config:
+      - name: "{{ item['interface'] }}"
+        enabled: "{{ item['enabled'] }}"
+        mode: layer3
+    state: merged
+  loop: "{{ interface_config }}"
+  when: 
+    - (interface_config is defined and (item['enabled'] is not defined or item['enabled'] == False))

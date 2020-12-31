@@ -1,0 +1,16 @@
+---
+- name: generate device configurations from templates
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  roles:
+  - network_config_generator
+
+- name: apply new device configs
+  hosts: all
+  connection: network_cli
+  gather_facts: no
+
+  roles:
+  - network_config_mgmt

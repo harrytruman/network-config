@@ -1,0 +1,8 @@
+---
+- name: configure interface state via network resource modules
+  hosts: all
+  connection: "{{ ansible_connection | default(network_cli) }}"
+  gather_facts: yes
+
+  roles:
+    - network_state_mgmt
