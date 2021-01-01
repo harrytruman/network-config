@@ -39,7 +39,18 @@ You can also run custom commands, save the output, and parse the configuration l
 
 Finally, device backups are largely considered a part of the "fact collection" process. In the same time that Ansible is parsing config lines, you can easily have it dump the full running-config to a backup location of any kind -- local file, external share, git repo, etc...
 
-### Generating Templates and Pushing Configs
+### Generating Config Templates and Pushing Commands
 
-The bread and butter of Ansible's simplicity is being able to quickly and easily generate configs, perform diffs, and send commands. If you already have full/partial config templates, it's nearly effortless to extract the things that can be easily converted to variables.
+The bread and butter of Ansible's simplicity is being able to quickly and easily generate configs, perform diffs, and send commands. If you already have full/partial config templates, it's nearly effortless to extract the things that can be easily converted to variables, and run the bulk of your commands through Jinja templates.
 
+Once your vars and templates are setup, you can determine where you want the config output staged. At that point, you're ready to generate a template and push commands!
+
+### State versus Config Management
+
+Although templates are quick and easy to create or convert, at the end of the day, you'll ultimately be responsible for determining how/when/where certain changes are being made. If you're managing devices like cattle, this may well be the easiest approach to get started with.
+
+However, you may eventually run into a situation where you need to add/remove AAA/ACL lines in specific orders, orchestrate numerous interface changes, or any number of other situations where simple config templates aren't quite enough. Perhaps your configuration variations span Cisco, Arista, Juniper, or any of the other dozens of network vendors that you may be managing?
+
+Ansible's [Network Resource Modules](https://docs.ansible.com/ansible/latest/network/user_guide/network_resource_modules.html) are the solution to managing device states across different devices and different device types. NRMs already have the logic built in to know how config properties need to be orchestrated in which specific ways, and these modules know how to run the behind-the-scenes commands that get you the desired configuration state.
+
+For a deep dive into Resource Modules, my colleague [Trishna did a wonderful talk at Ansiblefest 2019](https://www.ansible.com/deep-dive-into-ansible-network-resource-module).
