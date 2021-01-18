@@ -68,7 +68,7 @@ ansible_network_os=nxos
 
 --------------
 
-### Config Parsing and Inventory Backups
+### Fact Collection and Config Parsing
 
 Fact Collection is the first step to config-to-code! 
 
@@ -113,13 +113,23 @@ You can also run custom commands, save the output, and parse the configuration l
 
 ![fact cache](https://docs.ansible.com/ansible-tower/latest/html/userguide/_images/job-templates-options-use-factcache.png)
 
-Finally, device backups are largely considered a part of the "fact collection" process. In the same time that Ansible is parsing config lines, you can easily have it dump the full running-config to a backup location of any kind -- local file, external share, git repo, etc...
+
+### Backups and Restores
+
+I personally consider device backups part of the fact collection process. If you're already connecting to a device and parsing its config, you might as well make a backup too. In the same time that Ansible is parsing config lines, you can easily have it dump the full running-config to a backup location of any kind -- local file, external share, git repo, etc...
 ```
 - ios_config:
   backup: yes
   backup_options:
     filename: "{{ ansible_network_os }}-{{ inventory_hostname }}.cfg"
     dir_path: /var/tmp/backup/
+```
+
+And if you want to restore these configs, just grab the most recent backup file:
+```
+- name: restore config
+   ios_config:
+    src: /var/tmp/backup/{{ ansible_network_os }}-{{inventory_hostname}}.cfg
 ```
 
 ### Configs, Commands, and Templates
