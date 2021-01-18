@@ -13,7 +13,7 @@ This repo is an introduction to building a network automation framework:
 
 ## Getting Started
 
-### Inventory
+### Network Inventory
 
 At a minimum, Ansible needs an [inventory file](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html) with these details to run against network hosts:
 ```
@@ -101,6 +101,13 @@ You can also run custom commands, save the output, and parse the configuration l
 ![fact cache](https://docs.ansible.com/ansible-tower/latest/html/userguide/_images/job-templates-options-use-factcache.png)
 
 Finally, device backups are largely considered a part of the "fact collection" process. In the same time that Ansible is parsing config lines, you can easily have it dump the full running-config to a backup location of any kind -- local file, external share, git repo, etc...
+```
+- ios_config:
+  backup: yes
+  backup_options:
+    filename: "{{ ansible_network_os }}-{{ inventory_hostname }}.cfg"
+    dir_path: /var/tmp/backup/
+```
 
 ### Generating Config Templates and Pushing Commands
 
