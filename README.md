@@ -6,7 +6,7 @@ This repo is an introduction to building a network automation framework:
   * [Fact Collection and Configuration Parsing](https://github.com/harrytruman/network-config/tree/main/roles/network_facts)
   * [Backups and Restores](https://github.com/harrytruman/network-config/tree/main/roles/network_backup)
   * [Generating Configuration Templates](https://github.com/harrytruman/network-config/tree/main/roles/network_config_generator)
-  * [Configuration Management via Command Orchestration and Jinja Templates](https://github.com/harrytruman/network-config/tree/main/roles/network_config_mgmt)
+  * [Configuration Management via Commands and Jinja Templates](https://github.com/harrytruman/network-config/tree/main/roles/network_config_mgmt)
   * [State Management via Data Model; Config to Code](https://github.com/harrytruman/network-config/tree/main/roles/network_state_mgmt)
 
 --------------
