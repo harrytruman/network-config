@@ -3,11 +3,11 @@
 
 This repo is an introduction to building a network automation framework:
 
-  * Fact Collection and Configuration Parsing
-  * Backups and Restores
-  * Generating Config Templates and Pushing to Devices
-  * Configuration Management via Command Orchestration and Jinja Templates
-  * State Management via Data Model; Config to Code
+  * [Fact Collection and Configuration Parsing](https://github.com/harrytruman/network-config/tree/main/roles/network_facts)
+  * [Backups and Restores](https://github.com/harrytruman/network-config/tree/main/roles/network_backup)
+  * [Generating Config Templates and Pushing to Devices](https://github.com/harrytruman/network-config/tree/main/roles/network_config_generator)
+  * [Configuration Management via Command Orchestration and Jinja Templates](https://github.com/harrytruman/network-config/tree/main/roles/network_config_mgmt)
+  * [State Management via Data Model; Config to Code](https://github.com/harrytruman/network-config/tree/main/roles/network_state_mgmt)
 
 --------------
 
@@ -15,7 +15,7 @@ This repo is an introduction to building a network automation framework:
 
 ### Inventory
 
-At a minimum, Ansible needs an inventory with these details to run against hosts:
+At a minimum, Ansible needs an [inventory file](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html) with these details to run against network hosts:
 ```
 ansible_hostname     hostname_fqdn
 ansible_network_os   ios/nxos/etc
@@ -70,11 +70,35 @@ ansible_network_os=nxos
 
 ### Config Parsing and Inventory Backups
 
-Ansible's native `Fact Collection` is used to parse configs to code. It can be invoked by setting `gather_facts: true` in your top level playbook. And major networking vendor has fact modules that you can use in a playbook task: `ios_facts`, `eos_facts`, `nxos_facts`, `junos_facts`, etc... Fact Collection is the first step to config-to-code! 
+Fact Collection is the first step to config-to-code! 
+
+Ansible's native `Fact Collection` is used to parse configs to code. It can be invoked by setting `gather_facts: true` in your top level playbook. Every major networking vendor has fact modules that you can use both to gather facts, and to call separately in a playbook task: `ios_facts`, `eos_facts`, `nxos_facts`, `junos_facts`, etc...
+
+```
+ansible_facts:
+  ansible_net_fqdn: ios-dc2-rtr.lab.vault112
+  ansible_net_gather_subset:
+  - interfaces
+  ansible_net_hostname: ios-dc2-rtr
+  ansible_net_serialnum: X11G14CLASSIFIED...
+  ansible_net_system: nxos
+  ansible_net_model: 93180yc-ex
+  ansible_net_version: 14.22.0F
+  ansible_network_resources:
+    interfaces:
+    - name: Ethernet1/1
+      enabled: true
+      mode: trunk
+    - name: Ethernet1/2
+      enabled: false
+    ...
+```
 
 You can also run custom commands, save the output, and parse the configuration later. Any command output can be parsed and set as an Ansible Fact! Setting custom facts and using text parsers works particularly well for building out infrastructure checks/verifications. For instance, F5 natively gathers the attached license, but you can identify additional content that will help you automate expiration/renewal processes.
 
-Ansible Facts can be cached in AWX/Tower, as well. The combination of using network facts and fact caching can allow you to poll existing, in-memory data rather than parsing numerous additional commands to constantly check/refresh the device's running config.
+[Ansible Facts can be cached in AWX/Tower](https://docs.ansible.com/ansible-tower/latest/html/userguide/job_templates.html#benefits-of-fact-caching), as well. The combination of using network facts and fact caching can allow you to poll existing, in-memory data rather than parsing numerous additional commands to constantly check/refresh the device's running config.
+
+![fact cache](https://docs.ansible.com/ansible-tower/latest/html/userguide/_images/job-templates-options-use-factcache.png)
 
 Finally, device backups are largely considered a part of the "fact collection" process. In the same time that Ansible is parsing config lines, you can easily have it dump the full running-config to a backup location of any kind -- local file, external share, git repo, etc...
 
@@ -84,7 +108,7 @@ The bread and butter of Ansible's simplicity is being able to quickly and easily
 
 Once your vars and templates are setup, you can determine where you want the config output staged. At that point, you're ready to generate a template and push commands!
 
-### State versus Config Management
+### Config versus State Management - Config to Code
 
 Although templates are quick and easy to create or convert, at the end of the day, you'll ultimately be responsible for determining how/when/where certain changes are being made. If you're managing devices like cattle, this may well be the easiest approach to get started with.
 
