@@ -5,7 +5,7 @@ This repo is an introduction to building a network automation framework:
 
   * [Fact Collection and Configuration Parsing](https://github.com/harrytruman/network-config/tree/main/roles/network_facts)
   * [Backups and Restores](https://github.com/harrytruman/network-config/tree/main/roles/network_backup)
-  * [Generating Config Templates and Pushing to Devices](https://github.com/harrytruman/network-config/tree/main/roles/network_config_generator)
+  * [Generating Configuration Templates](https://github.com/harrytruman/network-config/tree/main/roles/network_config_generator)
   * [Configuration Management via Command Orchestration and Jinja Templates](https://github.com/harrytruman/network-config/tree/main/roles/network_config_mgmt)
   * [State Management via Data Model; Config to Code](https://github.com/harrytruman/network-config/tree/main/roles/network_state_mgmt)
 
@@ -94,7 +94,20 @@ ansible_facts:
     ...
 ```
 
-You can also run custom commands, save the output, and parse the configuration later. Any command output can be parsed and set as an Ansible Fact! Setting custom facts and using text parsers works particularly well for building out infrastructure checks/verifications. For instance, F5 natively gathers the attached license, but you can identify additional content that will help you automate expiration/renewal processes.
+You can also run custom commands, save the output, and parse the configuration later. Any command output can be parsed and set as an Ansible Fact! Setting custom facts and using text parsers works particularly well for building out infrastructure checks/verifications. Or perhaps if you simply want to find something that facts don't already identify:
+
+```
+- name: run command
+  ios_command:
+  commands: 
+    show version
+  register: output
+
+- name: set version fact
+  set_fact:
+    cacheable: true
+    ansible_net_version: "{{ output.stdout[0] | regex_search('Version (\S+)', '\1') | first }}"
+```
 
 [Ansible Facts can be cached in AWX/Tower](https://docs.ansible.com/ansible-tower/latest/html/userguide/job_templates.html#benefits-of-fact-caching), as well. The combination of using network facts and fact caching can allow you to poll existing, in-memory data rather than parsing numerous additional commands to constantly check/refresh the device's running config.
 
@@ -109,9 +122,18 @@ Finally, device backups are largely considered a part of the "fact collection" p
     dir_path: /var/tmp/backup/
 ```
 
-### Generating Config Templates and Pushing Commands
+### Configs, Commands, and Templates
 
 The bread and butter of Ansible's simplicity is being able to quickly and easily generate configs, perform diffs, and send commands. If you already have full/partial config templates, it's nearly effortless to extract the things that can be easily converted to variables, and run the bulk of your commands through Jinja templates.
+
+```
+vlan {{ vlan_id }}
+  name {{ vlan_description }}
+interface port-channel66.{{ vlan_id }}
+  description {{ interface_description }}
+  encapsulation dot1q {{ vlan_id }}
+
+```
 
 Once your vars and templates are setup, you can determine where you want the config output staged. At that point, you're ready to generate a template and push commands!
 
@@ -119,7 +141,7 @@ Once your vars and templates are setup, you can determine where you want the con
 
 Although templates are quick and easy to create or convert, at the end of the day, you'll ultimately be responsible for determining how/when/where certain changes are being made. If you're managing devices like cattle, this may well be the easiest approach to get started with.
 
-However, you may eventually run into a situation where you need to add/remove AAA/ACL lines in specific orders, orchestrate numerous interface changes, or any number of other situations where simple config templates aren't quite enough. Perhaps your configuration variations span Cisco, Arista, Juniper, or any of the other dozens of network vendors that you may be managing?
+However, you may eventually run into a situation where you need to add/remove AAA/ACL lines in specific orders, orchestrate numerous interface changes, or any number of other situations where simple config templates won't quite be enough. Perhaps your configuration variations span Cisco, Arista, Juniper, or any of the other dozens of network vendors that you may be managing?
 
 Ansible's [Network Resource Modules](https://docs.ansible.com/ansible/latest/network/user_guide/network_resource_modules.html) are the solution to managing device states across different devices and different device types. NRMs already have the logic built in to know how config properties need to be orchestrated in which specific ways, and these modules know how to run the behind-the-scenes commands that get you the desired configuration state.
 
