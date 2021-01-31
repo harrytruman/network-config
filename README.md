@@ -70,9 +70,27 @@ ansible_network_os=nxos
 
 ### Fact Collection and Config Parsing
 
-Fact Collection is the first step to config-to-code! 
+Ansible's native fact gathering can be invoked by setting `gather_facts: true` in your top level playbook. And every major networking vendor has fact modules that you can use in a playbook task: `ios_facts`, `eos_facts`, `nxos_facts`, `junos_facts`, etc...
 
-Ansible's native `Fact Collection` is used to parse configs to code. It can be invoked by setting `gather_facts: true` in your top level playbook. Every major networking vendor has fact modules that you can use both to gather facts, and to call separately in a playbook task: `ios_facts`, `eos_facts`, `nxos_facts`, `junos_facts`, etc...
+Just enable `gather_facts`, and you're on your way! Here's an example of gathering facts on a Cisco IOS device to create a backup of the full running config, and parse config subsets into a platform-agnostic data model:
+
+```
+- name: collect device facts and running configs
+  hosts: all
+  gather_facts: yes
+  connection: network_cli
+```
+
+Or at the task level:
+
+```
+  tasks:
+  - name: gather ios facts
+    ios_facts:
+      gather_subset: all
+```
+
+Either way, this is how you start down the path to true Config-to-Code!
 
 ```
 ansible_facts:
