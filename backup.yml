@@ -1,5 +1,5 @@
 ---
-- name: collect device facts and running configs
+- name: collect running-config and create backup
   hosts: all
   gather_facts: no
   connection: network_cli

@@ -1,9 +1,11 @@
-# Facts Machine: Network Facts, Configs, and Backups for Ansible/Tower
--------------
+# Facts Machine
+## Network Facts, Configs, and Backups for Ansible
 
-The Facts Machine is a role gathers Ansible Facts, sets custom facts, and parses command output to turn device configurations into code. Once gathered, facts can be used as backups/restores, or called later as variables in other roles or playbooks. And most importantly, they can be used to build the framework of a network CMDB.
+The Facts Machine parses network configs into a data model. This role gathers native Ansible Facts or sets custom facts to parse command output and convert device configurations into code.
 
-This role will pass through the `ansible_network_os` inventory variable to a series of playbooks based on that device OS. Currently, this role will gather facts and perform backups from the following platforms:
+Once gathered, facts can be used as backups/restores, called later as variables in other roles or playbooks, and used to define the state of a device. And most importantly, facts are used to build the framework of a network CMDB!
+
+This role will is compatible with the following platforms:
 
 ```
 eos
@@ -19,12 +21,13 @@ paloalto
 vyos
 ```
 
-### Role Variables
 --------------
 
-The `ansible_network_os` variable defines our inventory hosts' OS. We use this to decide which tasks and templates to run, since each OS can have OS specific commands. This should ideally be coming from an inventory or group variable.
+### Role Variables
 
-At a minimum, Ansible needs these inventory details:
+Ansible uses the `ansible_network_os` inventory variable to define the device OS. This should ideally be coming from an inventory or group variable.
+
+At a minimum, Ansible needs these details to run against hosts:
 ```
 ansible_hostname     hostname_fqdn
 ansible_network_os   ios/nxos/etc
@@ -39,6 +42,8 @@ Your initial inventory file can be setup like this:
 hostname_fqdn  ansible_network_os=ios  ansible_username=<username>  ansible_password=<password>
 hostname_fqdn  ansible_network_os=nxos  ansible_username=<username>  ansible_password=<password>
 ```
+
+--------------
 
 ## Ansible Network Fact Collection
 
@@ -58,7 +63,7 @@ Here's an example of gathering facts on a Cisco IOS device. This will create a b
       gather_subset: all
 ```
 
-## Setting Custom Ansible Facts
+### Setting Custom Ansible Facts
 
 You can also run custom commands, save the output, and parse the configuration later. Any command output can be parsed and set as a fact!
 
@@ -101,6 +106,7 @@ Setting custom facts works particularly well for building out infrastructure che
       - "Service Check Date is {{ service_date }}"
 ```
 
+--------------
 
 ## Ansible at Scale
 
@@ -110,7 +116,7 @@ It’s important to differentiate that Ansible/Tower operates somewhat different
 
 Network devices, on the other hand, rarely perform their own data processing. Until quite recently, very few network devices were built to have APIs -- much less Python. This presents a problem for any external configuration or management system. Things like SNMP address some parts of this problem by allowing some aspects of configuration and device state to be set or polled, but the vast majority of networks are managed via good ol' fashioned screen scrapes and command orchestration scripts.
 
-Ansible helps solve the problem of communicating with every device on your network. But even though this is the 21st century, network command orchestration is still accomplished primarily by sending commands to devices and having those devices return output back to Ansible. Over and over. Rather than being able to rely on remote devices to do their own work, Ansible handles all network data processing as it’s received from remote devices. For most network environments, all data processing will to be performed locally on Ansible/Tower. 
+--------------
 
 ### Fact Collection at Scale
 
@@ -135,57 +141,45 @@ Due to the large inventory size and the likelihood of significant inventory meta
 ##### Implementation and availability of Ansible network facts
 Ansible can collect device facts -- useful variables about remote hosts that can be used in playbooks. Additionally, these facts can be cached in Tower. The combination of using network facts with the fact cache can significantly increase Tower job speed and reduce processing loads.
 
+--------------
+
 ### Network Facts: Speed and Performance
 
-Get into a habit of routinely checking your playbook runtime. Basline peformance testing is your friend.
+Get into a habit of routinely checking your playbook runtime. Basline peformance testing is your friend:
 
 ```
 #ansible.cfg
 callback_whitelist = profile_tasks, timer
 ```
 
-That said, there are some general principles and guidelines. To start, IOS and EOS are the fastest, XR and NXOS are the slowest. For a better example, here are some base numbers from my individual peformance testing results. I captured simple job run times from an array of fact collection and device configuration roles:
+Beyond that, here are some general principles and guidelines. To start, IOS and EOS are the fastest, XR and NXOS are the slowest. For a better example, here are some base numbers from my individual peformance testing results. I captured simple job run times from an array of fact collection and device configuration roles:
 
 ##### Facts - Single Host
 
 Running fact collection against a single host - time in seconds:
 ```
-IOS:        3
-XE:         3
-AireOS:     5
-F5:         5
-CiscoWLAN:  6
-Fortinet:   6
-EOS:        8
-XR:         10
-NXOS:       12
+IOS:        2
+XE:         2
+AireOS:     4
+F5:         4
+CiscoWLAN:  5
+Fortinet:   5
+EOS:        7
+XR:         9
+NXOS:       10
 ```
 
-From the results at the time of testing, doing `show run` to create a config fact/backup takes 2-3 seconds for a single, modern IOS/XE device. That will vary, however, depending on the complexity of the config and the firmware versions. Older firmware versions perform far slower (5-10 seconds). And other network families differ entirely. Compared to IOS completing a simple config backup in 2-3 seconds, NXOS takes 10-15 seconds, IOS-XR takes 8-12 seconds, EOS takes 6-10 seconds, etc…
+From the results at the time of testing, fact collection takes 2-3 seconds for a single, modern IOS/XE device. That will vary, however, depending on the complexity of the config and the firmware versions. Older firmware versions perform far slower (5-10 seconds).
 
+And other network families differ entirely. Compared to IOS completing a simple config backup in 2-3 seconds, NXOS takes 10-15 seconds, IOS-XR takes 8-12 seconds, EOS takes 6-10 seconds, etc…
 
-##### Facts - Large Inventory Groups
-
-Running fact collection against large inventory groups - time in minutes:
-
-Job inventories were broken down into groups of 500 hosts, 100 forks
-```
-IOS:    4m 8sec
-XR:     4m 25sec
-NXOS:   15m 35sec
-EOS:    8m 9sec
----
-Full:   2h 3m 15sec
-```
-
-With a full inventory size of 15k+ devices, (10k ios, 3k nxos, 700 xr, 500 eos, etc...), a full fact collection run took just over two hours.
-
+--------------
 
 ## Storing and Using Facts
 
-Tower is not ideal for collecting, storing, and retrieving facts in environments with large inventories. Simply put, processing all of these local facts will put a tremendous strain on Tower. Additionally, any CMDB and Source of Truth should be implemented external to Tower.
+Tower is not ideal for collecting, storing, and retrieving facts in environments with large inventories. Simply put, processing all of these local facts WHILE running a full cluster will put a tremendous strain on Tower.
 
-Use something like an ELK cluster to store Tower logs and Ansible Facts:
+Any CMDB and Source of Truth should be implemented external to Tower. I use something like an ELK cluster to store Tower logs and Ansible Facts:
 
 https://github.com/harrytruman/elk-ansible
 
