@@ -5,23 +5,23 @@ Example Network Automation Role Structure:
 
 ```
 ├─ config_aaa
-│   ├── defaults 	# variable defaults that may be commonly changed
+│   ├── defaults            # variable defaults that may be commonly changed
 │   │   └── main.yaml
-│   ├── files		# non-template files
+│   ├── files               # non-template files
 │   │   └── aaa.cert
-│   ├── handlers		# intra-role tasks
+│   ├── handlers            # intra-role tasks
 │   │   └── main.yaml
-│   ├── meta		# playbook dependencies
+│   ├── meta                # playbook dependencies
 │   │   └── main.yaml
-│   ├── tasks		# playbooks; main.yml determines which os to use
+│   ├── tasks               # playbooks
 │   │   ├── ios.yaml
+│   │   ├── main.yaml       # determines which os to use
 │   │   ├── nxos.yaml
 │   │   ├── f5-os.yaml
-│   │   ├── main.yaml
-│   ├── templates	# jinja templates
+│   ├── templates           # jinja templates
 │   │   ├── ios-aaa.j2
 │   │   ├── nxos-aaa.j2
-│   └── vars		# variables and vaults
+│   └── vars                # variables and vaults
 │       └── main.yaml
 │       └── vault.yaml
 ...
