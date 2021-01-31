@@ -109,10 +109,11 @@ You can also run custom commands, save the output, and parse the configuration l
     ansible_net_version: "{{ output.stdout[0] | regex_search('Version (\S+)', '\1') | first }}"
 ```
 
-[Ansible Facts can be cached in AWX/Tower](https://docs.ansible.com/ansible-tower/latest/html/userguide/job_templates.html#benefits-of-fact-caching), as well. The combination of using network facts and fact caching can allow you to poll existing, in-memory data rather than parsing numerous additional commands to constantly check/refresh the device's running config.
+Ansible Facts can be cached too! Options include local file, memcached, Redis, and a plethora of others, via Ansible's [Cache Plugins](https://docs.ansible.com/ansible/latest/plugins/cache.html). And caching can be enabled with just the click button [in AWX and Tower](https://docs.ansible.com/ansible-tower/latest/html/userguide/job_templates.html#benefits-of-fact-caching), where you can then view facts via UI and API both.
 
 ![fact cache](https://docs.ansible.com/ansible-tower/latest/html/userguide/_images/job-templates-options-use-factcache.png)
 
+The combination of using network facts and fact caching can allow you to poll existing, in-memory data rather than parsing numerous additional commands to constantly check/refresh the device's running config.
 
 ### Backups and Restores
 
