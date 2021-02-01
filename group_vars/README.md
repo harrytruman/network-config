@@ -26,7 +26,7 @@ With variables defined like this, you can reference them individually, dynamical
   hostvars['{{ inventory_host }}']['ios']['special']['thing_to_find']
 ```
 
-## Variables
+## Required Variables
 
 The global inventory variables will be used to determine how, where, and why we make our system changes, and will act as the core of Ansible's logic and conditionals. These two are all Ansible needs to get started:
 
@@ -35,7 +35,7 @@ ansible_hostname
 ansible_network_os
 ```
 
-### Custom Group Variables:
+### Custom Variables:
 
 Beyond the obvious hostname and OS type, these are often the first `groupvars` that we define for environment and locational information:
 
