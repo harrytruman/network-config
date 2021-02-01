@@ -70,12 +70,13 @@ When taking an Infrastructure as Code (IaC) approach, more often than not your h
 
 An example would be maintaining F5 BigIP objects such as virtual servers, pools, nodes, etc as code:
 
-```host_vars/
-└── f5
-    ├── irules.yml
-    ├── nodes.yml
-    ├── pools.yml
-    └── vips.yml
+```
+├── host_vars
+│   └── f5
+│       ├── irules.yml
+│       ├── nodes.yml
+│       ├── pools.yml
+│       └── vips.yml
 
 ```
 
