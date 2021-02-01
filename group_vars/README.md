@@ -62,4 +62,80 @@ Here's an example of how variables will be used as the source for all of our bas
 {% if site == "s2" and if zone = “az” %}
 ntp source {{ ntp_source_s2 }}
 ntp server {{ ntp_server_s2 }} key {{ zone }}
+{% endif %}
+```
+### Nested Custom Host Variables:
+
+When taking an Infrastructure as Code (IaC) approach, more often than not your host variables can quickly grow in size depending on your use case (F5, Cisco ACI, etc). The most common setup with Ansible only uses a single host_var file for a device. By setting it as a directory we can cleanly organize each variable based on certain criteria.
+
+An example would be maintaining F5 BigIP objects such as virtual servers, pools, nodes, etc as code:
+
+```host_vars/
+└── f5
+    ├── irules.yml
+    ├── nodes.yml
+    ├── pools.yml
+    └── vips.yml
+
+```
+
+And an example of a variable under nodes.yml:
+
+```
+nodes:
+  - name: web1
+    host: 192.168.100.101
+    state: present
+  - name: web2
+    host: 192.168.100.102
+    state: present
+  - name: db1
+    host: 192.168.101.101
+    state: present
+  - name: db2
+    host: 192.168.101.102
+    state: present
+```
+
+
+Now that we have our host_vars directory and these variable files filled out we can then simply reference the "nodes" var that we just created. Ansible will automatically pull these variables in for use, so no need to do an "include_vars" or anything sepcial!
+
+```
+
+---
+- name: Configure F5 Objects
+  hosts: f5
+  gather_facts: no
+
+  tasks:
+    - debug:
+        msg: "{{ nodes }}"
+
+
+
+ok: [f5] => {
+    "msg": [
+        {
+            "host": "192.168.100.101",
+            "name": "web1",
+            "state": "present"
+        },
+        {
+            "host": "192.168.100.102",
+            "name": "web2",
+            "state": "present"
+        },
+        {
+            "host": "192.168.101.101",
+            "name": "db1",
+            "state": "present"
+        },
+        {
+            "host": "192.168.101.102",
+            "name": "db2",
+            "state": "present"
+        }
+    ]
+}
+
 ```
