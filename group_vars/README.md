@@ -98,7 +98,7 @@ nodes:
 ```
 
 
-Now that we have our host_vars directory and these variable files filled out we can then simply reference the "nodes" var that we just created:
+Now that we have our host_vars directory and these variable files filled out we can then simply reference the "nodes" var that we just created. Ansible will automatically pull these variables in for use, so no need to do an "include_vars" or anything sepcial!
 
 ```
 
