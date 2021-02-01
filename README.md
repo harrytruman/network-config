@@ -112,7 +112,7 @@ ansible_facts:
     ...
 ```
 
-#### Fact Caching
+### Caching Facts
 
 You can also run custom commands, save the output, and parse the configuration later. Any command output can be parsed and set as an Ansible Fact! Setting custom facts and using text parsers works particularly well for building out infrastructure checks/verifications. Or perhaps if you simply want to find something that facts don't already identify:
 
