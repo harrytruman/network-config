@@ -153,6 +153,14 @@ And if you want to restore these configs, just grab the most recent backup file:
     src: /var/tmp/backup/{{ ansible_network_os }}-{{inventory_hostname}}.cfg
 ```
 
+Another option to restore a config is to pull the last cached fact for the device. This variable is stored as "ansible_net_config" and contains the entire running config:
+
+```
+- name: restore config
+   ios_config:
+    src: "{{ ansible_net_config }}"
+```
+
 ### Configs, Commands, and Templates
 
 The bread and butter of Ansible's simplicity is being able to quickly and easily generate configs, perform diffs, and send commands. If you already have full/partial config templates, it's nearly effortless to extract the things that can be easily converted to variables, and run the bulk of your commands through Jinja templates.
