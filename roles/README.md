@@ -40,6 +40,8 @@ Example Network Automation Role Structure:
 
 When adding new roles, it’s suggested that you name them in a manner that will allow you to quickly determine playbook functions. A good naming standard will allow you to make dynamic calls to your playbooks and roles.
 
+A few things I recommend. First, use lowercase everything; camelcase will cause frustration. Second, the only special characters you should use are dashes (`-`) and underscores (`_`). Finally, it doesn't matter whether you use `.yaml` or `.yml`, but for sanity's sake, keep it consistent.
+
 Here’s what Red Hat recommends for Ansible role naming standards. Galaxy roles can not have dashes in them if you are using `ansible-galaxy` to pull them.
 
 ```
