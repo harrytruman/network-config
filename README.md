@@ -90,7 +90,7 @@ Or at the task level:
       gather_subset: all
 ```
 
-Either way, this is how you start down the path to true Config-to-Code!
+Regardless of which you prefer, Ansible will give you all the facts about your network devices. This is how you start down the path to true Config-to-Code!
 
 ```
 ansible_facts:
@@ -135,6 +135,8 @@ Ansible Facts can be cached too! Options include local file, memcached, Redis, a
 
 The combination of using network facts and fact caching can allow you to poll existing, in-memory data rather than parsing numerous additional commands to constantly check/refresh the device's running config.
 
+--------------
+
 ### Backups and Restores
 
 I personally consider device backups part of the fact collection process. If you're already connecting to a device and parsing its config, you might as well make a backup too. In the same time that Ansible is parsing config lines, you can easily have it dump the full running-config to a backup location of any kind -- local file, external share, git repo, etc...
@@ -153,6 +155,8 @@ And if you want to restore these configs, just grab the most recent backup file:
     src: /var/tmp/backup/{{ ansible_network_os }}-{{inventory_hostname}}.cfg
 ```
 
+--------------
+
 ### Configs, Commands, and Templates
 
 The bread and butter of Ansible's simplicity is being able to quickly and easily generate configs, perform diffs, and send commands. If you already have full/partial config templates, it's nearly effortless to extract the things that can be easily converted to variables, and run the bulk of your commands through Jinja templates.
@@ -167,6 +171,8 @@ interface port-channel66.{{ vlan_id }}
 ```
 
 Once your vars and templates are setup, you can determine where you want the config output staged. At that point, you're ready to generate a template and push commands!
+
+--------------
 
 ### Config versus State Management - Config to Code
 
