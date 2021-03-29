@@ -1,0 +1,179 @@
+vlan_config:
+- vlan_id: 501
+  vlan_name: VL_S2Z0MLDT_501
+- vlan_id: 502
+  vlan_name: VL_S2Z0MLDT_502
+
+interface_config:
+- interface: Ethernet1/1
+  description: S2Z0MLDTRTC1N1-Te0/1/3
+  po_description: S2Z0MLDTRTC1N1-Po12
+  enabled: True
+  mode: trunk
+  portchannel_id: 101
+
+- interface: Ethernet1/2
+  enabled: False
+
+- interface: Ethernet1/3
+  description: S2Z0MLDTRTC1N2-Te0/1/3
+  po_description: S2Z0MLDTRTC1N2-Po12
+  enabled: True
+  mode: trunk
+  portchannel_id: 103
+
+- interface: Ethernet1/4
+  enabled: False
+
+- interface: Ethernet1/5
+  description: S1Z0MLDTSWC1N2-E1/5
+  po_description: S1Z0MLDTSWC1N1-Po105
+  enabled: True
+  mode: trunk
+  portchannel_id: 105
+
+- interface: Ethernet1/6
+  enabled: False
+
+- interface: Ethernet1/7
+  description: S1Z0MLDTSWC1N1-E1/7
+  po_description: S2Z0MLDTRTC1N2-Po12
+  enabled: True
+  mode: trunk
+  portchannel_id: 105
+
+- interface: Ethernet1/8
+  enabled: False
+
+- interface: Ethernet1/9
+  enabled: False
+
+- interface: Ethernet1/10
+  enabled: False
+
+- interface: Ethernet1/11
+  enabled: False
+
+- interface: Ethernet1/12
+  enabled: False
+
+- interface: Ethernet1/13
+  enabled: False
+
+- interface: Ethernet1/14
+  enabled: False
+
+- interface: Ethernet1/15
+  enabled: False
+
+- interface: Ethernet1/16
+  enabled: False
+
+- interface: Ethernet1/17
+  enabled: False
+
+- interface: Ethernet1/18
+  enabled: False
+
+- interface: Ethernet1/19
+  enabled: False
+
+- interface: Ethernet1/20
+  enabled: False
+
+- interface: Ethernet1/21
+  enabled: False
+
+- interface: Ethernet1/22
+  enabled: False
+
+- interface: Ethernet1/23
+  enabled: False
+
+- interface: Ethernet1/24
+  enabled: False
+
+- interface: Ethernet1/25
+  enabled: False
+
+- interface: Ethernet1/26
+  enabled: False
+
+- interface: Ethernet1/27
+  enabled: False
+
+- interface: Ethernet1/28
+  enabled: False
+
+- interface: Ethernet1/29
+  enabled: False
+
+- interface: Ethernet1/30
+  enabled: False
+
+- interface: Ethernet1/31
+  enabled: False
+
+- interface: Ethernet1/32
+  enabled: False
+
+- interface: Ethernet1/33
+  enabled: False
+
+- interface: Ethernet1/34
+  enabled: False
+
+- interface: Ethernet1/35
+  description: vPC PeerLink
+  enabled: True
+  portchannel_id: 100
+  mode: trunk
+
+- interface: Ethernet1/36
+  description: vPC PeerLink
+  enabled: True
+  portchannel_id: 100
+  mode: trunk
+
+- interface: port-channel100
+  description: vPC PeerLink
+  mode: trunk
+  enabled: True
+  vpc_peerlink: True
+  members:
+    - member: Ethernet1/35
+      mode: active
+    - member: Ethernet1/36
+      mode: active
+
+- interface: port-channel101
+  description: S2Z0MLDTRTC1N1-Po12
+  mode: trunk
+  enabled: True
+  vlans: 501
+  vpc: 101
+  members:
+    - member: Ethernet1/1
+      mode: active
+
+- interface: port-channel103
+  description:  S2Z0MLDTRTC1N2-Po12
+  mode: trunk
+  enabled: True
+  vlans: 502
+  vpc: 103
+  members:
+    - member: Ethernet1/3
+      mode: active
+
+- interface: port-channel105
+  description: S1Z0MLDTSWC1N1-Po105
+  mode: trunk
+  enabled: True
+  vlans: 501-502
+  vpc: 105
+  members:
+    - member: Ethernet1/5
+      mode: active
+    - member: Ethernet1/7
+      mode: active

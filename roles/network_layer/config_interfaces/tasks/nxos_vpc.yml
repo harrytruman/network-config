@@ -1,0 +1,53 @@
+- name: Get random VPC Domain ID
+  set_fact:
+    nxos_vpc_domain: "{{ 1000 | random }}"
+    cacheable: true
+  when: 
+    - inventory_hostname.endswith('n1')
+    - nxos_vpc_domain is not defined 
+
+- name: Set VPC Domain ID for Secondary Unit
+  set_fact: 
+    nxos_vpc_domain: "{{ hostvars[peer_node]['nxos_vpc_domain'] }}"
+    cacheable: true
+  when:
+    - inventory_hostname.endswith('n2')
+    - hostvars[peer_node]['nxos_vpc_domain'] is defined
+
+- name: Create VPC Domain Primary
+  nxos_vpc:
+    domain: "{{ nxos_vpc_domain }}"
+    role_priority: "1"
+    peer_gw: true
+    pkl_src: "{{ ansible_host }}"
+    pkl_dest: "{{ hostvars[peer_node]['ansible_host'] }}"
+    auto_recovery: true
+  when: inventory_hostname.endswith('n1') 
+
+- name: Create VPC Domain Secondary
+  nxos_vpc:
+    domain: "{{ nxos_vpc_domain }}"
+    role_priority: "2"
+    peer_gw: true
+    pkl_src: "{{ ansible_host }}"
+    pkl_dest: "{{ hostvars[peer_node]['ansible_host'] }}"
+    auto_recovery: true
+  when: inventory_hostname.endswith('n2') 
+
+- name: Configure VPC Peer-Link Interfaces
+  nxos_vpc_interface:
+    state: present
+    portchannel: '100' 
+    peer_link: "{{ item['vpc_peerlink'] }}"
+  loop: "{{ interface_config }}"
+  when:
+    - item['vpc_peerlink'] is defined
+
+- name: Configure VPC Interfaces
+  nxos_vpc_interface:
+    state: present
+    portchannel: "{{ item['vpc'] }}" 
+    vpc: "{{ item['vpc'] }}"
+  loop: "{{ interface_config }}"
+  when:
+    - item['vpc'] is defined

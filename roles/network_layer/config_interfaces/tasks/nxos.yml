@@ -1,0 +1,76 @@
+- name: Get VPC Data
+  nxos_command:
+    commands:
+      - command: sh run | i 'vpc domain'
+        output: json
+  register: vpc_data
+
+- name: Set VPC Data as Fact if it exists
+  set_fact:
+    nxos_vpc_domain: "{{ vpc_data['stdout_lines'][0] }}"
+  when: vpc_data['stdout_lines'][0][0] != ''
+
+- name: Ensure LACP and VPC feature is enabled
+  nxos_feature:
+    feature: "{{ item}}"
+    state: enabled
+  loop: 
+   - lacp
+   - vpc
+  
+- name: Configure VLANs 
+  nxos_vlans:
+    config:
+      - vlan_id: "{{ item['vlan_id'] }}"
+        name: "{{ item['vlan_name'] }}"
+    state: merged 
+  when: vlan_config is defined
+  loop: "{{ vlan_config }}"
+
+- name: Configure Interface Settings
+  nxos_interfaces:
+    config:
+      - name: "{{ item['interface'] }}"
+        description: "{{ item['description'] }}"
+        enabled: "{{ item['enabled'] }}"
+        mode: "{% if 'ip_address' in item %}layer3{% else %}layer2{% endif %}"
+    state: replaced
+  loop: "{{ interface_config }}"
+  when: (interface_config is defined and (item['enabled'] == True))
+
+- name: Configure Port Channels
+  nxos_lag_interfaces:
+    config:
+      - name: "{{ item['interface'] }}"
+        members: "{{ item['members'] }}"
+    state: replaced
+  loop: "{{ interface_config }}"
+  when: ('port-channel' in item['interface'] and ('members' in item))
+
+- name: Configure VLANs on Trunk Interfaces
+  nxos_l2_interface:
+    name: "{{ item['interface'] }}"
+    mode: trunk
+    trunk_vlans: "{{ item['vlans'] }}"
+  loop: "{{ interface_config }}"
+  when: ('mode' in item and (item['mode'] == 'trunk' and(item['vlans'] is defined)))
+
+- name: Configure Trunk on VPC Peerlink
+  nxos_l2_interface:
+    name: "{{ item['interface'] }}"
+    mode: trunk
+  loop: "{{ interface_config }}"
+  when: 
+    - item['mode'] is defined
+    - item['mode'] == 'trunk'
+    - item['vpc_peerlink'] is defined
+
+- name: Configure VLANs on Access Interfaces
+  nxos_l2_interfaces:
+    config:
+      - name: "{{ item['interface'] }}"
+        access: 
+          vlan: "{{ item['vlans'] }}"
+    state: replaced
+  loop: "{{ interface_config }}"
+  when: ('mode' in item and (item['mode'] == 'access' and(item['vlans'] is defined)))

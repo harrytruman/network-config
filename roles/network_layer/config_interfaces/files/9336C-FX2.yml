@@ -1,0 +1,129 @@
+# default omit
+
+#Example:
+#- Ethernet1/35
+#     description: vPC PeerLink
+#     enabled: {True/False}
+#     portchannel_id: {ID}
+#     mode: {trunk/access}
+#     vpc_peerlink: {True}
+#     vlans: {vlan/vlan-range}
+
+
+
+interfaces:
+  - interface: Ethernet1/1 
+    enabled: False
+
+  - interface: Ethernet1/2 
+    enabled: False
+
+  - interface: Ethernet1/3 
+    enabled: False
+
+  - interface: Ethernet1/4 
+    enabled: False
+
+  - interface: Ethernet1/5 
+    enabled: False
+
+  - interface: Ethernet1/6 
+    enabled: False
+
+  - interface: Ethernet1/7 
+    enabled: False
+
+  - interface: Ethernet1/8 
+    enabled: False
+
+  - interface: Ethernet1/9 
+    enabled: False
+
+  - interface: Ethernet1/10
+    enabled: False
+
+  - interface: Ethernet1/11
+    enabled: False
+
+  - interface: Ethernet1/12
+    enabled: False
+
+  - interface: Ethernet1/13
+    enabled: False
+
+  - interface: Ethernet1/14
+    enabled: False
+
+  - interface: Ethernet1/15
+    enabled: False
+
+  - interface: Ethernet1/16
+    enabled: False
+
+  - interface: Ethernet1/17
+    enabled: False
+
+  - interface: Ethernet1/18
+    enabled: False
+
+  - interface: Ethernet1/19
+    enabled: False
+
+  - interface: Ethernet1/20
+    enabled: False
+
+  - interface: Ethernet1/21
+    enabled: False
+
+  - interface: Ethernet1/22
+    enabled: False
+
+  - interface: Ethernet1/23
+    enabled: False
+
+  - interface: Ethernet1/24
+    enabled: False
+
+  - interface: Ethernet1/25
+    enabled: False
+
+  - interface: Ethernet1/26
+    enabled: False
+
+  - interface: Ethernet1/27
+    enabled: False
+
+  - interface: Ethernet1/28
+    enabled: False
+
+  - interface: Ethernet1/29
+    enabled: False
+
+  - interface: Ethernet1/30
+    enabled: False
+
+  - interface: Ethernet1/31
+    enabled: False
+
+  - interface: Ethernet1/32
+    enabled: False
+
+  - interface: Ethernet1/33
+    enabled: False
+
+  - interface: Ethernet1/34
+    enabled: False
+
+  - interface: Ethernet1/35
+    description: vPC PeerLink
+    enabled: True
+    portchannel_id: 100
+    mode: trunk
+    vpc_peerlink: True
+  
+  - interface: Ethernet1/36
+    description: vPC PeerLink
+    enabled: True
+    portchannel_id: 100
+    mode: trunk
+    vpc_peerlink: True
