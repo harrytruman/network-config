@@ -1,0 +1,27 @@
+bfd-template single-hop BFD-TMPLT-1
+ interval min-tx 50 min-rx 50 multiplier 5
+
+{% for interface in ospf_interfaces %}
+ {% if '.' in interface %}
+    interface {{ interface.split('.')[0] }}
+ {% endif %}
+    interface {{ interface }}
+     ip ospf authentication message-digest
+     ip ospf message-digest-key 1 md5 0 {{ ospf_key }}
+     bfd template BFD-TMPLT-1
+{% endfor %}
+
+
+router ospf {{ ospf_process_id }}
+ router-id {{ ospf_router_id }}
+ log-adjacency-changes
+ passive-interface default
+ {% for interface in ospf_interfaces %}
+ no passive-interface {{ interface }}
+ {% endfor %}
+
+ {% for item in ospf_area %}
+  area {{ item['area'] }} authentication message-digest
+ network {{ item['network'] | ipaddr('network') }} {{ item['network'] | ipaddr('hostmask') }} area {{ item['area'] }}
+ {% endfor %}
+

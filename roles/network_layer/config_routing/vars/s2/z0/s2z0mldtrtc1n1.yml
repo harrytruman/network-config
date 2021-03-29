@@ -1,0 +1,61 @@
+loopback_interfaces:
+  - name: loopback0
+    ip: 10.32.136.100/32
+
+route_acls:
+  - name: ACL_S2Z0MLDT_BGP_OUT
+    type: standard
+    permit: 
+      - permit 10.32.128.0 0.0.3.255
+      - permit 10.32.132.0 0.0.3.255
+
+route_maps:
+  - name: RM_S2Z0MLDT_OSPF_TO_BGP
+    action: permit
+    match_ip: ACL_S2Z0MLDT_BGP_OUT
+    order: 10
+
+################## OSPF ##################
+
+ospf_process_id: 1
+
+ospf_router_id: 10.32.136.100
+
+ospf_key: ABC123
+
+ospf_area:
+  - network: 10.32.130.8/29
+    area: 0
+  - network: 10.32.136.100/32
+    area: 0
+
+ospf_interfaces:
+  - Port-channel10.1100
+
+################## BGP ##################
+
+bgp_as: 65011
+
+bgp_router_id: 10.32.136.100
+
+bgp_neighbors:
+  - neighbor: 10.32.137.1
+    remote_as: 65001
+    password: Changeme123
+    route_map: 
+      name: RM_S2Z0MLDT_OSPF_TO_BGP
+      direction: out
+
+bgp_networks:
+  - 10.32.136.0/23
+
+bgp_agg_addresses:
+  - 10.32.136.0/23
+  - 10.32.128.0/22
+  - 10.32.132.0/22
+
+bgp_redistribute:
+  - name: ospf 1
+    route_map: RM_S2Z0MLDT_OSPF_TO_BGP
+
+

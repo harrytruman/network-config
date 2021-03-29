@@ -1,0 +1,59 @@
+---
+- name: Block for route-maps
+  block:
+    - name: Get existing route maps
+      ios_command:
+        commands: show running-config | section ^route-map
+      register: old_route_maps
+
+    - name: Set some facts
+      set_fact:
+         old_route_map_acls: "{{ old_route_map_acls | combine({ item.strip().split()[0]:item.strip().split('address')[-1].strip() }) }}" 
+      loop: "{{ old_route_maps.stdout[0].split('route-map') | list }}"
+      when: item != ""
+
+    - name: Print out some facts
+      debug:
+        msg: "{{ (old_route_map_acls[item['name']].split() | list ) | difference(item['match_ip']) }}"
+      loop: "{{ route_maps }}"
+
+    - name: Set a fact for old_route_map_names
+      set_fact:
+        old_route_map_names: "{{ old_route_map_names }} + ['{{ item.split()[1] }}']"
+      loop: "{{ old_route_maps.stdout_lines[0] }}"
+      when: 
+        - "item.startswith('route-map')"
+
+    - name: Set a fact for new_route_map_names
+      set_fact:
+        new_route_map_names: "{{ new_route_map_names }} + ['{{ item['name'] }}']"
+      loop: "{{ route_maps }}"
+
+    - name: Create route-maps
+      ios_config:
+        lines: 
+          - "match ip address {{ item['match_ip'] }}"
+        parents: "route-map {{ item['name'] }} {{ item['action'] }} {{ item['order'] }}"
+      loop: "{{ route_maps }}"
+
+    - name: Remove old unused route maps
+      ios_config:
+        lines: "no route-map {{ item }}"
+      loop: "{{ old_route_map_names }}"
+      when: item not in new_route_map_names
+
+    - name: Remove unused acls
+      ios_config:
+        lines: 
+          - "no match ip address {{ ((old_route_map_acls[item['name']].split() | list ) | difference(item['match_ip']) | join(' ') ) }}"
+        parents: "route-map {{ item['name'] }} {{ item['action'] }} {{ item['order'] }}"
+      loop: "{{ route_maps }}"
+      when: "((old_route_map_acls[item['name']].split() | list ) | difference(item['match_ip'])) != []"
+
+    - name: Print unused acls
+      debug:
+        msg: "no match ip address {{ ((old_route_map_acls[item['name']].split() | list ) | difference(item['match_ip']) | join(' ') ) }}"
+      loop: "{{ route_maps }}"
+      when: "((old_route_map_acls[item['name']].split() | list ) | difference(item['match_ip'])) != []"
+
+  when: route_maps is defined

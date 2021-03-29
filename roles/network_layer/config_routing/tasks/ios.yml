@@ -1,0 +1,103 @@
+---
+- name: Get Backup of Device
+  ios_config:
+    backup: yes
+    backup_options:
+      filename: "{{ inventory_hostname }}"
+
+- name: Get Existing OSPF Config
+  ios_command:
+      commands: 
+        - command: sh run | s router ospf
+      match: any
+  register: existing_ospf_config
+
+- name: Set OSPF Fact
+  set_fact:
+    new_ospf_config: "{{ query('template', 'ospf.j2') }}.split('\n')"
+  when: ospf_process_id is defined
+
+- name: Get Existing BGP Config
+  ios_command:
+      commands: 
+        - command: sh run | s router bgp
+      match: any
+  register: existing_bgp_config
+  when: bgp_as is defined
+
+- name: Set BGP Fact
+  set_fact:
+    new_bgp_config: "{{ query('template', 'bgp.j2') }}.split('\n')"
+  when: bgp_as is defined
+
+- name: Get Existing Route-Maps
+  ios_command:
+      commands: 
+        - command: sh run | s ^route-map
+      match: any
+  register: existing_routemaps
+  when: route_maps is defined
+
+- name: Set Route-Maps Fact
+  set_fact:
+    new_routemaps: "{{ query('template', 'routemaps.j2') }}.split('\n')"
+  when: route_maps is defined
+
+- name: Create Loopback Interfaces
+  ios_l3_interfaces:
+    config:
+      - name: "{{ item['name'] }}"
+        ipv4: 
+        - address: "{{ item['ip'] | ipaddr('ip') }} {{ item['ip'] | ipaddr('netmask') }}"
+    state: merged
+  loop: "{{ loopback_interfaces }}"
+  when: loopback_interfaces is defined
+
+- name: Create Route ACLs
+  ios_config:
+    lines: "{{ item['permit'] }}"
+    parents: "ip access-list standard {{ item['name'] }}"
+    before: "no ip access-list standard {{ item['name'] }}"
+    match: exact
+  loop: "{{ route_acls }}"
+
+- name: Remove Unneeded Route-Maps
+  ios_config:
+    lines: "no {{ item }}"
+  loop: "{{ existing_routemaps['stdout_lines'][0] }}"
+  when: 
+    - item not in new_routemaps
+
+- name: Create Route-Maps
+  ios_config:
+    src: routemaps.j2
+    diff_against: running
+  when: route_maps is defined
+
+- name: Configure OSPF from Jinja Template
+  ios_config:
+    src: ospf.j2
+    diff_against: running
+  when: ospf_process_id is defined
+
+- name: Remove Unneeded OSPF Config
+  ios_config:
+    lines: "no {{ item }}"
+    parents: "router ospf {{ ospf_process_id }}"
+  loop: "{{ existing_ospf_config['stdout_lines'][0] }}"
+  when: item not in new_ospf_config
+
+- name: Configure BGP from Jinja Template
+  ios_config:
+    src: bgp.j2
+    diff_against: running
+  when: bgp_as is defined
+
+- name: Remove Unneeded BGP Config
+  ios_config:
+    lines: "no {{ item }}"
+    parents: "router bgp {{ bgp_as }}"
+  loop: "{{ existing_bgp_config['stdout_lines'][0] }}"
+  when: 
+    - item not in new_bgp_config
+    - "'password' not in item"

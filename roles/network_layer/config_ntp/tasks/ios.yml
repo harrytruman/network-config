@@ -1,0 +1,6 @@
+---
+- name: Configure IOS NTP Servers
+  ios_ntp:
+    server: "{{ item }}"
+    source_int: GigabitEthernet0
+  loop: "{{ ntp_servers[site][zone] }}"

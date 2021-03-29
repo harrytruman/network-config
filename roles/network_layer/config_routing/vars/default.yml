@@ -1,0 +1,2 @@
+#The entire purpose of this is to be catch-all for any device that doesn't have a device template file.
+#The conditional within the OS-specific playbook will skip hosts from there.

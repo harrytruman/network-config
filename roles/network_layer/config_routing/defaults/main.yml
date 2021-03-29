@@ -1,0 +1,7 @@
+---
+f5_management_routes:
+  s1:
+    - network: 10.135.0.0/16
+      name: Management
+    - network: 10.14.0.0/16
+      name: ACI

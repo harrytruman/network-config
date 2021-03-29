@@ -1,0 +1,43 @@
+---
+- name: Generate ISE TACACS Key
+  set_fact:
+    ise_pass: "{{ lookup('password', '/dev/null length=18 chars=ascii_letters,digits') }}"
+    location: "{{ inventory_hostname[0:2] | upper }}"
+  no_log: true
+
+- name: Create NETOPS Remote Role Groups
+  bigip_remote_role:
+    name: Netops
+    line_order: 1
+    attribute_string: F5-LTM-User-Info-1=Netops
+    remote_access: true
+    assigned_role: administrator
+    terminal_access: tmsh
+    provider: "{{ provider }}"
+  delegate_to: localhost
+
+- name: Create GTOC Remote Role Groups
+  bigip_remote_role:
+    name: GTOC
+    line_order: 2
+    attribute_string: F5-LTM-User-Info-1=GTOC
+    remote_access: true
+    assigned_role: guest
+    terminal_access: none
+    provider: "{{ provider }}"
+  delegate_to: localhost
+
+- name: Set TACACS Authentication
+  bigip_device_auth:
+    type: tacacs
+    authentication: use-all-servers
+    protocol_name: ip
+    secret: "{{ ise_pass }}"
+    service_name: ppp
+    servers: 
+      - address: "{{ item }}"
+    state: present
+    use_for_auth: yes    
+    provider: "{{ provider }}"
+  with_items: "{{ ise_servers[site] }}"
+  delegate_to: localhost

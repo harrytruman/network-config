@@ -1,0 +1,10 @@
+---
+# tasks file for config_routing
+- name: Include host variables file
+  include_vars: "{{ item }}"
+  with_first_found: 
+    - "{{ site }}/{{ zone }}/{{ inventory_hostname }}.yml"
+    - default.yml
+    
+- name: "Include {{ ansible_network_os }} tasks"
+  include_tasks: "{{ ansible_network_os }}.yml"
