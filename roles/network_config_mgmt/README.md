@@ -61,11 +61,6 @@ Requirements
 Ansible 2.9+
 Tower 3.7+
 
-Dependencies
-------------
-
-N.A
-
 License
 -------
 
