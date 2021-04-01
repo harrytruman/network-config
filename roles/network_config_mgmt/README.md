@@ -8,7 +8,7 @@ To use this role, place your config templates in the `templates` directory. In `
 Examples
 ----------------
 
-Jinja template:
+Jinja template for BGP configs:
 ```
 router bgp {{ bgp_as }}
  bgp router-id {{ bgp_router_id }}
