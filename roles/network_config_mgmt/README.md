@@ -1,7 +1,7 @@
 Network Config Management
 =========
 
-This role uses command templates to orchestrate device changes. Jinja templates will be used to orchestrate commands depending on the vendor, model, device type, or any other preferred method of differentiating devices and locations.
+This role uses command templates to make device changes. Network configuration commands are placed in a Jinja template, which then orchestrate commands depending on your preference for differentiating between vendors, models, device types, or any other preferred criteria.
 
 To use this role, place your config templates in the `templates` directory. In `tasks/main.yml`, ensure your inventory OS' are correct (ios, nxos, eos, etc).
 
