@@ -5,7 +5,7 @@ Ansible's Network Resource Modules are the solution to managing device states ac
 
 This role uses a pre-defined state definition, as if config values were being retrieved from a CMDB.
 
-Example Playbook
+Examples
 ----------------
 
 Interface template:
