@@ -4,7 +4,9 @@
 
 The Facts Machine parses network configs into a data model. This role gathers native Ansible Facts or sets custom facts to parse command output and convert device configurations into code.
 
-Once gathered, facts can be used as backups/restores, called later as variables in other roles or playbooks, and used to define the state of a device. And most importantly, facts are used to build the framework of a network CMDB!
+Ansible's native fact gathering can be invoked by setting `gather_facts: true` in your top level playbook. And every major networking vendor has fact modules that you can use in a playbook task: `ios_facts`, `eos_facts`, `nxos_facts`, `junos_facts`, etc...
+
+Once gathered, facts can be used as backups/restores, called later as variables in other roles or playbooks, and used to define the state of a device. And most importantly, facts are the cornerstone of a network CMDB!
 
 This role will is compatible with the following platforms:
 
@@ -24,6 +26,52 @@ vyos
 
 --------------
 
+## Ansible Network Fact Collection
+
+Here's an example of gathering facts on a Cisco IOS device to create a backup of the full running config, and parse config subsets into a platform-agnostic data model:
+
+Just enable `gather_facts`, and you're on your way! 
+
+```
+- name: collect device facts and running configs
+  hosts: all
+  gather_facts: yes
+  connection: network_cli
+```
+
+Or set your play at the task level:
+
+```
+  tasks:
+  - name: gather ios facts
+    ios_facts:
+      gather_subset: all
+```
+
+Either way, this is how to start down the path to true Config-to-Code!
+
+```
+ansible_facts:
+  ansible_net_fqdn: ios-dc2-rtr.lab.vault112
+  ansible_net_gather_subset:
+  - interfaces
+  ansible_net_hostname: ios-dc2-rtr
+  ansible_net_serialnum: X11G14CLASSIFIED...
+  ansible_net_system: nxos
+  ansible_net_model: 93180yc-ex
+  ansible_net_version: 14.22.0F
+  ansible_network_resources:
+    interfaces:
+    - name: Ethernet1/1
+      enabled: true
+      mode: trunk
+    - name: Ethernet1/2
+      enabled: false
+    ...
+ ```
+ 
+--------------
+
 ### Role Variables
 
 Ansible uses the `ansible_network_os` inventory variable to define the device OS. This should ideally be coming from an inventory or group variable.
@@ -36,9 +84,9 @@ ansible_username     username
 ansible_password     password
 ```
 
-### Inventory
+### Building an Inventory
 
-I *highly* recommend [vaulting your passwords/keys/creds](https://docs.ansible.com/ansible/latest/user_guide/vault.html#creating-encrypted-variables) instead of storing them plaintext! My inventories usually start like this:
+Here's an example of how you'll need to create an inventory file:
 
 ```
 [all]
@@ -81,51 +129,9 @@ ansible_become_method=enable
 ansible_network_os=nxos
 ```
 
+I *highly* recommend [vaulting your passwords/keys/creds](https://docs.ansible.com/ansible/latest/user_guide/vault.html#creating-encrypted-variables) instead of storing them plaintext!
+
 --------------
-
-## Ansible Network Fact Collection
-
-Ansible's native fact gathering can be invoked by setting `gather_facts: true` in your top level playbook. And every major networking vendor has fact modules that you can use in a playbook task: `ios_facts`, `eos_facts`, `nxos_facts`, `junos_facts`, etc...
-
-Just enable `gather_facts`, and you're on your way! Here's an example of gathering facts on a Cisco IOS device to create a backup of the full running config, and parse config subsets into a platform-agnostic data model:
-
-```
-- name: collect device facts and running configs
-  hosts: all
-  gather_facts: yes
-  connection: network_cli
-```
-
-Or at the task level:
-
-```
-  tasks:
-  - name: gather ios facts
-    ios_facts:
-      gather_subset: all
-```
-
-Either way, this is how you start down the path to true Config-to-Code!
-
-```
-ansible_facts:
-  ansible_net_fqdn: ios-dc2-rtr.lab.vault112
-  ansible_net_gather_subset:
-  - interfaces
-  ansible_net_hostname: ios-dc2-rtr
-  ansible_net_serialnum: X11G14CLASSIFIED...
-  ansible_net_system: nxos
-  ansible_net_model: 93180yc-ex
-  ansible_net_version: 14.22.0F
-  ansible_network_resources:
-    interfaces:
-    - name: Ethernet1/1
-      enabled: true
-      mode: trunk
-    - name: Ethernet1/2
-      enabled: false
-    ...
- ```
 
 #### Fact Caching
 
