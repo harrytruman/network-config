@@ -1,33 +1,14 @@
 Network State Management
 =========
 
-This role will configure VLAN and interfaces states on network devices. 
-
 Ansible's Network Resource Modules are the solution to managing device states across different devices and different device types. NRMs already have the logic built in to know how config properties need to be orchestrated in which specific ways, and these modules know how to run the behind-the-scenes commands that get you the desired configuration state.
 
-Requirements
-------------
-
-Ansible 2.9+
-Tower 3.7+
-
-Role Variables
---------------
-
-This role mainly uses a pre-defined state definition, as if it were being retrieved from a CMDB. Currently, these are the two variables being used:
-
-`aws_acct_name`
-`aws_acct_num`
-
-Dependencies
-------------
-
-N.A
+This role uses a pre-defined state definition, as if config values were being retrieved from a CMDB.
 
 Example Playbook
 ----------------
 
-For a practical example, here’s an interface template:
+Interface template:
 ```
 interface_config:
 - interface: Ethernet1/1
@@ -51,7 +32,7 @@ interface_config:
       mode: active
 ```
 
-Using the new network resource modules, we simply define our interface properties, and Ansible will figure out the rest.
+Using the network resource modules, we  define our desired interface state and Ansible will run the necessary commands:
 
 ```
 - name: Configure Interface Settings
@@ -65,6 +46,12 @@ Using the new network resource modules, we simply define our interface propertie
   loop: "{{ interface_config }}"
   when: (interface_config is defined and (item['enabled'] == True))
 ```
+
+Requirements
+------------
+
+Ansible 2.9+
+Tower 3.7+
 
 License
 -------
