@@ -1,4 +1,4 @@
-Network Config Management
+Network Configuration Management
 =========
 
 This role uses command templates to make device changes. Network configuration commands are placed in a Jinja template, which then orchestrate commands depending on your preference for differentiating between vendors, models, device types, or any other preferred criteria.
