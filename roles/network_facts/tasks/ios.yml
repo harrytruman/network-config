@@ -38,6 +38,6 @@
   debug:
     var: ansible_facts
 
-- name: print hostvars
-  debug:
-    var: hostvars
+#- name: print hostvars
+#  debug:
+#    var: hostvars
