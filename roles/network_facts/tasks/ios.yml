@@ -30,9 +30,9 @@
   set_fact:
     config_lines: "{{ output.stdout_lines[1] }}"
 
-- name: set management interface name fact
-  set_fact:
-    mgmt_interface_name: "{{ output.stdout[2].split()[0] }}"
+#- name: set management interface name fact
+#  set_fact:
+#    mgmt_interface_name: "{{ output.stdout[2].split()[0] }}"
 
 - name: print ansible facts
   debug:
