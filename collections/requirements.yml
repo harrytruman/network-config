@@ -1,10 +1,4 @@
 ---
-#collections:
-#- name: cisco.ios
-#  source: https://galaxy.ansible.com/
-
-#- name: device42.d42
-#  version: 1.1.2
-#  source: https://galaxy.ansible.com/
-
-
+collections:
+- name: cisco.ios
+  source: https://galaxy.ansible.com/
