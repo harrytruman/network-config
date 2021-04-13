@@ -1,0 +1,30 @@
+---
+- name: create git repo
+  git:
+    repo: https://{{ gitusername | urlencode }}:{{ gitpassword }}@github.com/harrytruman/facts-machine
+    dest: "{{ git_dir }}"
+    update: yes
+    version: master
+
+- name: create {{ ansible_network_os }} configration file
+  template:
+    src: templates/{{ ansible_network_os }}.j2
+    dest: "{{ git_dir }}"/configs/{{ ansible_date_time.date }}-{{ ansible_date_time.time }}.conf
+
+- name: add template to git
+  command: "git add --all"
+  args:
+    chdir: "{{ git_dir }}"
+  register: git_add
+
+- name: commit to git
+  command: git commit -a -m "added template for {{ ansible_network_os }}-{{ ansible_date_time.date }}-{{ ansible_date_time.time }}"
+  args:
+    chdir: "{{ git_dir }}"
+  register: git_commit
+
+- name: push to git
+  command: git push
+  args:
+    chdir: "{{ git_dir }}"
+  register: git_push

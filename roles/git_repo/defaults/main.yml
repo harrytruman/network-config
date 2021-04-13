@@ -1,0 +1,7 @@
+git_branch_test: "test"
+git_branch_merge: "master"
+
+git_username: test
+git_password: password
+
+git_dir: "/tmp/testrepo"

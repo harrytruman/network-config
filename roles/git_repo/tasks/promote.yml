@@ -1,0 +1,47 @@
+---
+
+# git_branch_test is where changes are coming FROM
+# git_branch_merge is where changes are going TO
+
+- name: clone git repo
+  git:
+    repo: https://{{ git_username | urlencode }}:{{ git_password }}@github.com/harrytruman
+    dest: "{{ git_dir }}"
+    update: yes
+    version: master
+
+- name: checkout testing branch - {{ git_branch_test }}
+  command: git checkout {{ git_branch_test }}
+  args:
+    chdir: "{{ git_dir }}"
+  register: git_checkout_test
+
+- name: pull and verify testing branch
+  command: git pull
+  args:
+    chdir: "{{ git_dir }}"
+  register: git_pull_test
+
+- name: checkout merge branch - {{ git_branch_merge }}
+  command: git checkout {{ git_branch_merge }}
+  args:
+    chdir: "{{ git_dir }}"
+  register: git_checkout_merge
+
+- name: pull and verify merge branch
+  command: git pull
+  args:
+    chdir: "{{ git_dir }}"
+  register: git_pull_merge
+
+- name: merge changes from {{ git_branch_test }} to {{ git_branch_merge }}
+  command: git merge {{ git_branch_test }}
+  args:
+    chdir: "{{ git_dir }}"
+  register: git_merge
+
+- name: push changes to {{ git_branch_merge }}
+  command: git push origin {{ git_branch_merge }}
+  args:
+    chdir: "{{ git_dir }}"
+  register: git_push
