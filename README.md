@@ -174,7 +174,7 @@ Once your vars and templates are setup, you can determine where you want the con
 
 --------------
 
-### Config versus State Management - Config to Code
+### Config versus State Management - Infrastructure as Code
 
 Although templates are quick and easy to create or convert, at the end of the day, you'll ultimately be responsible for determining how/when/where certain changes are being made. If you're managing devices like cattle, this may well be the easiest approach to get started with.
 
@@ -182,4 +182,88 @@ However, you may eventually run into a situation where you need to add/remove AA
 
 Ansible's [Network Resource Modules](https://docs.ansible.com/ansible/latest/network/user_guide/network_resource_modules.html) are the solution to managing device states across different devices and different device types. NRMs already have the logic built in to know how config properties need to be orchestrated in which specific ways, and these modules know how to run the behind-the-scenes commands that get you the desired configuration state.
 
-For a deep dive into Resource Modules, my colleague [Trishna did a wonderful talk at Ansiblefest 2019](https://www.ansible.com/deep-dive-into-ansible-network-resource-module).
+For a practical example, here’s an interface template:
+
+```
+interface_config:
+- interface: Ethernet1/1
+  description: ansible_managed-Te0/1/2
+  enabled: True
+  mode: trunk
+  portchannel_id: 100
+
+- interface: Ethernet1/2
+  enabled: False
+
+- interface: port-channel100
+  description: vPC PeerLink
+  mode: trunk
+  enabled: True
+  vpc_peerlink: True
+  members:
+    - member: Ethernet1/1
+      mode: active
+    - member: Ethernet1/36
+      mode: active
+```
+
+#### Code to Config!
+Using the new network resource modules, we simply define our interface properties, and Ansible will figure out the rest.
+
+```
+- name: Configure Interface Settings
+  nxos_interfaces:
+    config:
+      name: "{{ item['interface'] }}"
+      description: "{{ item['description'] }}"
+      enabled: "{{ item['enabled'] }}"
+      mode: "{% if 'ip_address' in item %}layer3{% else %}layer2{% endif %}"
+    state: replaced
+  loop: "{{ interface_config }}"
+  when: (interface_config is defined and (item['enabled'] == True))
+```
+
+In the example above, the new interface modules will look at an interface config template and determine if it needs to be enabled. If so, it will loop through each interface and begin setting those config values. You’ll do the same sort of thing for your VLANs/Trunks, VPCs, Port Channels, etc…
+
+```
+- name: Configure Port Channels
+  nxos_lag_interfaces:
+    config:
+      - name: "{{ item['interface'] }}"
+        members: "{{ item['members'] }}"
+      state: replaced
+  loop: "{{ interface_config }}"
+  when: ('port-channel' in item['interface'] and ('members' in item))
+```
+
+And if the `nxos_interfaces` configs looks familiar, that’s because they are! It’s the same thing as what you would get from `nxos_facts` parsing the interfaces section:
+
+```
+- name: gather nxos facts
+  nxos_facts: 
+  gather_subset: interfaces
+```
+
+#### Config to Code!
+If you do it right, you can now take interface facts and pass them right back into Ansible as configuration properties!
+
+```
+  ansible_facts:
+  ansible_net_fqdn: rtr2
+  ansible_net_gather_subset:
+  - interfaces
+  ansible_net_hostname: rtr2
+  ansible_net_serialnum: D01E1309…
+  ansible_net_system: nxos
+  ansible_net_model: 93180yc-ex
+  ansible_net_version: 14.22.0F
+  ansible_network_resources:
+    interfaces:
+    - name: Ethernet1/1
+      enabled: true
+      mode: trunk
+    - name: Ethernet1/2
+      enabled: false 
+```
+
+For a deep dive into Network Resource Modules, my colleague [Trishna did a wonderful talk at Ansiblefest 2019](https://www.ansible.com/deep-dive-into-ansible-network-resource-module).
