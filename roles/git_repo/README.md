@@ -2,9 +2,9 @@
 
 Once we begin developing new playbooks, we suggest following the GitFlow promotion process to merge your code via a CI/CD workflow.
 
-[[https://github.com/harrytruman/network-config/tree/main/images/gitflow.png|GitFlow]]
+[[https://github.com/harrytruman/network-config/tree/main/images/gitflow.png|alt=gitflow]]
 
-[[https://github.com/harrytruman/network-config/tree/main/images/dev_workflow.png|Tower Promotion Workflow]]
+[[https://github.com/harrytruman/network-config/tree/main/images/dev_workflow.png|alt=promo_orkflow]]
 
 ## Creating a Git Repo from Scratch
 Using the ansible-galaxy command line tool that comes bundled with Ansible, we can create a role with the init command. For example, the following will create a role directory structure called ‘tower-project’ in the current working directory:
