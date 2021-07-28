@@ -1,12 +1,4 @@
-# Ansible CI/CD Examples
-
-Once we begin developing new playbooks, we suggest following the GitFlow promotion process to merge your code via a CI/CD workflow.
-
-[[https://github.com/harrytruman/network-config/tree/main/images/gitflow.png|alt=gitflow]]
-
-[[https://github.com/harrytruman/network-config/tree/main/images/dev_workflow.png|alt=promo_orkflow]]
-
-## Creating a Git Repo from Scratch
+# Creating a Git Repo from Scratch
 Using the ansible-galaxy command line tool that comes bundled with Ansible, we can create a role with the init command. For example, the following will create a role directory structure called ‘tower-project’ in the current working directory:
 
 ```
@@ -70,7 +62,7 @@ git commit -m 'ansible role with all the essentials'
 git push
 ```
 
-### Cloning and Existing Repo from GitLab
+## Cloning and Existing Repo from GitLab
 We will be managing our playbooks/roles through Git repositories hosted on GitHub/GitLab/BitBucket/etc…
 
 If our repo already exists, our starting point for new development will be to clone this repo to where we’ll be working:
@@ -86,7 +78,7 @@ or
 
 Now that you understand the basics behind Ansible development, and you’ve created or cloned a Git repo, you’re ready to start writing playbooks!
 
-### Creating a New Git Branch
+## Creating a New Git Branch
 When beginning new development, you’ll create a new branch in a repo. Brand new development should start with a pull/rebase from the master branch:
 
 ```
@@ -95,6 +87,7 @@ git branch -b feature/config_aaa
 git checkout feature/config_aaa
 ```
 
+## Committing Code
 Now you’re on a new feature branch. Make sure you commit your changes!
 
 ```
@@ -103,6 +96,7 @@ git commit -a -m “new branch”
 git push origin feature/config_aaa
 ```
 
+## Merging Branches
 After you’re satisfied with your new branch, merge it into dev to begin formal testing:
 
 ```
