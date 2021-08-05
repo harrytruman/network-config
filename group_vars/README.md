@@ -26,6 +26,27 @@ With variables defined like this, you can reference them individually, dynamical
   hostvars['{{ inventory_host }}']['ios']['special']['thing_to_find']
 ```
 
+And for broader infrastructure projects, this sort of structure scales well:
+```
+group_vars
+  │  ├── all
+  │  │   ├── network
+  │  │   │   ├── eos
+  │  │   │   ├── ios
+  │  │   │   ├── junos
+  │  │   │   ├── nxos
+  │  │   ├── provisioning
+  │  │   │   ├── azure
+  │  │   │   ├── vmware
+  │  │   ├── linux
+  │  │   │   ├── services
+  │  │   │   ├── apps
+  │  │   ├── windows
+  │  │   │   ├── services
+  │  │   │   ├── apps
+```
+
+
 ## Required Variables
 
 The global inventory variables will be used to determine how, where, and why we make our system changes, and will act as the core of Ansible's logic and conditionals. These two are all Ansible needs to get started:
