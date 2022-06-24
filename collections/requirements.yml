@@ -1,4 +1,8 @@
 ---
 collections:
+
 - name: cisco.ios
+  source: https://galaxy.ansible.com/
+
+- name: cisco.nxos
   source: https://galaxy.ansible.com/
