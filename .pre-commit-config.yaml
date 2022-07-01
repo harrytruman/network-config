@@ -7,14 +7,14 @@ ci:
     chore: auto fixes from pre-commit.com hooks
     for more information, see https://pre-commit.ci
 repos:
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    # keep it before yamllint
-    rev: v2.5.1
-    hooks:
-      - id: prettier
-        additional_dependencies:
-          - prettier
-          - prettier-plugin-toml
+#  - repo: https://github.com/pre-commit/mirrors-prettier
+#    # keep it before yamllint
+#    rev: v2.5.1
+#    hooks:
+#      - id: prettier
+#        additional_dependencies:
+#          - prettier
+#          - prettier-plugin-toml
 #  - repo: https://github.com/streetsidesoftware/cspell-cli
 #    rev: v5.8.4
 #    hooks:
@@ -31,8 +31,8 @@ repos:
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
-#      - id: mixed-line-ending
-#      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+      - id: fix-byte-order-marker
       #- id: check-merge-conflict
 #  - repo: https://github.com/ansible/ansible-lint.git
 #    rev: v4.1.1a0
