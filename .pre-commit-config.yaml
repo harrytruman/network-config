@@ -22,10 +22,10 @@ repos:
 #        # entry: codespell --relative
 #        args: [--relative, --no-progress, --no-summary]
 #        name: Spell check with cspell
-#  - repo: https://github.com/sirosen/check-jsonschema
-#    rev: 0.14.0
-#    hooks:
-#      - id: check-github-workflows
+  - repo: https://github.com/sirosen/check-jsonschema
+    rev: 0.14.0
+    hooks:
+      - id: check-github-workflows
   - repo: https://github.com/pre-commit/pre-commit-hooks.git
     rev: v4.1.0
     hooks:
@@ -33,7 +33,7 @@ repos:
       - id: trailing-whitespace
       - id: mixed-line-ending
       - id: fix-byte-order-marker
-      #- id: check-merge-conflict
+      - id: check-merge-conflict
 #  - repo: https://github.com/ansible/ansible-lint.git
 #    rev: v4.1.1a0
 #    hooks:
