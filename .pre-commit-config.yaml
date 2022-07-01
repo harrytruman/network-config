@@ -34,8 +34,8 @@ repos:
       - id: mixed-line-ending
       - id: fix-byte-order-marker
       #- id: check-merge-conflict
-  - repo: https://github.com/ansible/ansible-lint.git
-    rev: v4.1.1a0
-    hooks:
-      - id: ansible-lint
-        files: \.(yaml|yml)$
+#  - repo: https://github.com/ansible/ansible-lint.git
+#    rev: v4.1.1a0
+#    hooks:
+#      - id: ansible-lint
+#        files: \.(yaml|yml)$
