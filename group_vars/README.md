@@ -146,7 +146,7 @@ nodes:
     state: present
 ```
 
-Now that we have our host_vars directory and these variable files filled out we can then simply reference the "nodes" var that we just created. Ansible will automatically pull these variables in for use, so no need to do an "include_vars" or anything sepcial!
+Now that we have our `host_vars` directory with these variable files, we can then simply reference the `nodes` var that we just created. Ansible will automatically pull these variables in for use, so there's no need to do an "include_vars" or anything special!
 ```
 
 ---
