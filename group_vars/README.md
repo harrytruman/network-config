@@ -63,7 +63,7 @@ or
 
 ## Required Variables
 
-The global inventory variables will be used to determine how, where, and why we make our system changes, and will act as the core of Ansible's logic and conditionals. These two are all Ansible needs to get started:
+The global inventory variables will be used to determine how, where, and why we make our system changes, and will act as the core of Ansible's logic and conditionals. These two vars are all Ansible needs to work with network devices:
 
 ```
 ansible_hostname
@@ -72,7 +72,7 @@ ansible_network_os
 
 ### Custom Variables:
 
-Beyond the obvious hostname and OS type, these are often the first `groupvars` that we define for environment and locational information:
+Beyond the obvious hostname and OS type, the possibilities are endless, but these are often the first `groupvars` that we define for environment and locational information.
 
 ```
 site
