@@ -1,11 +1,12 @@
 # Inventory, Group, and Host Variables
 
-Ansible's inventory variables are grouped into two classes of internal categories: `groupvars` and `hostvars`. The differences are exactly what you would expect, too. Any high-level info/data that applies to multiple hosts will be contained in `groupvars`, versus per-host details in `hostvars`.
+Ansible's inventory variables are grouped into two classes of internal categories: `groupvars` and `hostvars`.
 
-Ideally, `groupvars` will be obtained from your CMDB. But regardless of whether that data is built automatically or manually, your `groupvars` structure should match 1:1 with our inventory classifications.
+The differences are exactly what you would expect. Any high-level info/data that applies to multiple hosts will be contained in `groupvars`, versus per-host details that are specified in your `hostvars`.
+
+Ideally, `groupvars` are obtained from your CMDB. But regardless of whether that data is built automatically by an inventory script, or populated manually in a file, your `groupvars` structure should match 1:1 with our inventory classifications.
 
 For instance, I usually set my top-level groups based on the `ansible_network_os`, so that I can dynamically interact with the data I need:
-
 ```
 group_vars
   ├─ all
@@ -15,17 +16,24 @@ group_vars
   │   │   └── special.yaml
   │   ├── nxos
   │   │   └── main.yml
+  │   │   └── vault.yaml
+  │   │   └── extra.yaml
   │   ├── aci
   │   │   └── main.yaml
+  │   │   └── vault.yaml
+  │   │   └── unique.yaml
   │   ├── f5
   │   │   └── main.yaml
+  │   │   └── vault.yaml
+  │   │   └── more_vars.yaml
 ```
 
-In practice, any of the above IOS, NXOS, ACI, or F5 `groupvars` would be called like so:
+And Ansible allows you to reference variables defined as either `hostvars` _or_ `groupvars`, via the `hostvars` definition which invokes them both. And then you can work your way down the chain.
+
+With any of the above examples -- IOS, NXOS, ACI, or F5 -- and regardless of which file they're in -- these `groupvars` can be referenced individually _or_ dynamically, like so:
 ```
   hostvars['{{ inventory_host }}']['ansible_network_os']['var']
 ```
-
 
 And for broader infrastructure projects, this sort of structure scales well:
 ```
@@ -47,17 +55,16 @@ group_vars
   │  │   │   ├── apps
 ```
 
-Regardless, Ansible allows you to reference variables defined as either `hostvars` _or_ `groupvars` -- via the `hostvars` definition, which invokes them both. And then you can work your way down the chain.
-
-This will allow you to call them individually _or_ dynamically, like so:
-```
-  ansible_network_os: ios
-  hostvars['{{ inventory_host }}']['ios']['var']['more_vars']
-```
-or
+With the above example, any Linux `groupvars` would be referenced like this:
 ```
   ansible_os: linux
-  hostvars['{{ inventory_host }}']['linux']['var']['more_vars']
+  hostvars['{{ inventory_host }}']['linux']['services']['vars']
+```
+
+Or Cisco IOS devices:
+```
+  ansible_network_os: ios
+  hostvars['{{ inventory_host }}']['ios']['var']
 ```
 
 
