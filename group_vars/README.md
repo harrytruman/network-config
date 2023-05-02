@@ -57,7 +57,7 @@ group_vars
 
 With the above example, any Linux `groupvars` would be referenced like this:
 ```
-  ansible_os: linux
+  ansible_os_family: linux
   hostvars['{{ inventory_host }}']['linux']['services']['vars']
 ```
 
@@ -66,6 +66,9 @@ Or Cisco IOS devices:
   ansible_network_os: ios
   hostvars['{{ inventory_host }}']['ios']['var']
 ```
+
+**Note** Ansible's internal var names can differ between OS and Network devices:
+`ansible_os_family` and `ansible_network_os`
 
 
 ## Required Variables
