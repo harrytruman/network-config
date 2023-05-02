@@ -28,7 +28,7 @@ group_vars
   │   │   └── more_vars.yaml
 ```
 
-And Ansible allows you to reference variables defined as either `hostvars` _or_ `groupvars`, via the `hostvars` definition which invokes them both. And then you can work your way down the chain.
+And Ansible allows you to reference variables defined as either `hostvars` _or_ `groupvars` -- both will be called via the `hostvars` definition, which invokes them both. And then you can work your way down the chain.
 
 With any of the above examples -- IOS, NXOS, ACI, or F5 -- and regardless of which file they're in -- these `groupvars` can be referenced individually _or_ dynamically, like so:
 ```
