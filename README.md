@@ -19,6 +19,7 @@ At a minimum, Ansible needs an [inventory file](https://docs.ansible.com/ansible
 ```
 ansible_hostname     hostname_fqdn
 ansible_network_os   ios/nxos/etc
+ansible_os_family    redhat/ubuntu/windows
 ansible_username     username
 ansible_password     password
 ```
