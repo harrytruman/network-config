@@ -68,7 +68,9 @@ Or for Cisco IOS devices:
 ```
 
 **Note:** Ansible's internal var names can differ between OS and Network devices:
+
   `ansible_os_family` relates to any sort of OS
+  
   `ansible_network_os` relates to any network devices
 
 
