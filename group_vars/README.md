@@ -21,11 +21,6 @@ group_vars
   │   │   └── main.yaml
 ```
 
-With variables defined like this, you can reference them individually, dynamically:
-```
-  hostvars['{{ inventory_host }}']['ios']['special']['thing_to_find']
-```
-
 And for broader infrastructure projects, this sort of structure scales well:
 ```
 group_vars
@@ -46,6 +41,12 @@ group_vars
   │  │   │   ├── apps
 ```
 
+Regardless, Ansible allows you to reference variables defined as either `hostvars` _or_ `groupvars` -- the `hostvars` definition invokes them both. And then you can work your way down the chain.
+
+This will allow you to call them individually _or_ dynamically, like so:
+```
+  hostvars['{{ inventory_host }}']['ios']['item']['thing_to_find']
+```
 
 ## Required Variables
 
