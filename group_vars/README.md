@@ -1,10 +1,10 @@
 # Inventory, Group, and Host Variables
 
-Ansible's inventory variables are grouped into two classes of internal categories: `groupvars` and `hostvars`. The differences are exactly what you would expect, too. Any info/data that applies to multiple hosts will be contained in `groupvars`, versus per-host info in `hostvars`.
+Ansible's inventory variables are grouped into two classes of internal categories: `groupvars` and `hostvars`. The differences are exactly what you would expect, too. Any high-level info/data that applies to multiple hosts will be contained in `groupvars`, versus per-host details in `hostvars`.
 
-Ideally, `groupvars` will be obtained from your CMDB. But regardless of whether that data is built automatically or manually, our `groupvars` structure will match 1:1 with our inventory classifications.
+Ideally, `groupvars` will be obtained from your CMDB. But regardless of whether that data is built automatically or manually, your `groupvars` structure should match 1:1 with our inventory classifications.
 
-I usually set my groups based on the `ansible_network_os` so that I can dynamically interact with the data I need:
+For instance, I usually set my top-level groups based on the `ansible_network_os`, so that I can dynamically interact with the data I need:
 
 ```
 group_vars
@@ -20,6 +20,12 @@ group_vars
   │   ├── f5
   │   │   └── main.yaml
 ```
+
+In practice, any of the above IOS, NXOS, ACI, or F5 `groupvars` would be called like so:
+```
+  hostvars['{{ inventory_host }}']['ansible_network_os']['var']
+```
+
 
 And for broader infrastructure projects, this sort of structure scales well:
 ```
@@ -41,12 +47,19 @@ group_vars
   │  │   │   ├── apps
 ```
 
-Regardless, Ansible allows you to reference variables defined as either `hostvars` _or_ `groupvars` -- the `hostvars` definition invokes them both. And then you can work your way down the chain.
+Regardless, Ansible allows you to reference variables defined as either `hostvars` _or_ `groupvars` -- via the `hostvars` definition, which invokes them both. And then you can work your way down the chain.
 
 This will allow you to call them individually _or_ dynamically, like so:
 ```
-  hostvars['{{ inventory_host }}']['ios']['item']['thing_to_find']
+  ansible_network_os: ios
+  hostvars['{{ inventory_host }}']['ios']['var']['more_vars']
 ```
+or
+```
+  ansible_os: linux
+  hostvars['{{ inventory_host }}']['linux']['var']['more_vars']
+```
+
 
 ## Required Variables
 
