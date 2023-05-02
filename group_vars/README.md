@@ -1,4 +1,4 @@
-# Inventory, Group, and Host Variables
+# Group and Host Variables
 
 Ansible's inventory variables are grouped into two classes of internal categories: `groupvars` and `hostvars`.
 
