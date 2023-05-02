@@ -64,7 +64,7 @@ With the above example, any Linux `groupvars` would be referenced like this:
 Or Cisco IOS devices:
 ```
   ansible_network_os: ios
-  hostvars['{{ inventory_host }}']['ios']['var']
+  hostvars['{{ inventory_host }}']['network']['ios']['var']
 ```
 
 **Note** Ansible's internal var names can differ between OS and Network devices:
