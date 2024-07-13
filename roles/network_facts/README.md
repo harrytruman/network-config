@@ -1,4 +1,4 @@
-# Network Facts and Configs
+# The Facts Machine!
 
 This role gathers native Ansible Facts or sets custom facts to parse command output and convert device configurations into code. Once gathered, facts can be used as backups/restores, called later as variables in other roles or playbooks, and used to define the state of a device.
 
