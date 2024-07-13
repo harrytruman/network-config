@@ -19,7 +19,7 @@ At a minimum, Ansible needs an [inventory file](https://docs.ansible.com/ansible
 ```
 ansible_hostname     hostname_fqdn
 ansible_network_os   ios/nxos/etc
-ansible_os_family    redhat/ubuntu/windows
+ansible_os_family    RedHat/Ubuntu/Windows/etc
 ansible_username     username
 ansible_password     password
 ```
@@ -34,6 +34,8 @@ ios-dc1-swt
 ios-dc2-swt
 nxos-dc1-rtr
 nxos-dc2-rtr
+rhel-dc1-idm
+rhel-dc2-idm
 
 [all:vars]
 ansible_connection=network_cli
@@ -65,6 +67,16 @@ nxos-dc2-rtr
 ansible_become=yes
 ansible_become_method=enable
 ansible_network_os=nxos
+
+[linux]
+rhel-dc1-idm
+rhel-dc2-idm
+
+[linux:vars]
+ansible_become=yes
+ansible_become_method=enable
+ansible_network_os=linux # overwriting this for my custom Facts Machine roles
+ansible_os_family=RedHat
 ```
 
 --------------
