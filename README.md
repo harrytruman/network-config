@@ -13,7 +13,7 @@ This repo is an introduction to building a network automation framework:
 
 ## Getting Started
 
-### Network Inventory
+### Setup An Inventory
 
 At a minimum, Ansible needs an [inventory file](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html) with these details to run against OS or network hosts:
 ```
