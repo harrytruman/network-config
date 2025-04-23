@@ -62,7 +62,7 @@ git commit -m 'ansible role with all the essentials'
 git push
 ```
 
-## Cloning and Existing Repo from GitLab
+## Cloning and Existing Repo
 We will be managing our playbooks/roles through Git repositories hosted on GitHub/GitLab/BitBucket/etc…
 
 If our repo already exists, our starting point for new development will be to clone this repo to where we’ll be working:
