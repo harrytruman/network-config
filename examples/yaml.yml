@@ -3,15 +3,15 @@
 # YAML specifications for formal start and end of files
 - name: "YAML Spec"
   desc: "YAML uses three dashes (“---”) to separate directives from document content. This also serves to signal the start of a document if no directives are present. Three dots ( “...”) indicate the end of a document without starting a new one, for use in communication channels."
-  src: "https://yaml.org/spec/1.2.2/#22-structures"
+  src: 'https://yaml.org/spec/1.2.2/#22-structures'
 
 # The dashes and dots are optional
 - name: "YAML Syntax with Ansible"
-  desc: "All YAML files (regardless of their association with Ansible or not) can optionally begin with --- and end with ...
-  src: "https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html#yaml-basics"
+  desc: "All YAML files (regardless of their association with Ansible or not) can optionally begin with --- and end with ..."
+  src: 'https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html#yaml-basics'
 
 - name: "YAML Essentials with Ansible"
   desc: "Common things we see and do with YAML"
-  src: "https://developers.redhat.com/learn/ansible/yaml-essentials-ansible"
+  src: 'https://developers.redhat.com/learn/ansible/yaml-essentials-ansible'
 
 ...
