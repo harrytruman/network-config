@@ -10,14 +10,6 @@
   desc: "All YAML files (regardless of their association with Ansible or not) can optionally begin with --- and end with .... This is part of the YAML format and indicates the start and end of a document."
   src: "https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html#yaml-basics"
 
-- name: "Ansible Development - Good Practices"
-  desc: "Good Practices from Consulting"
-  src: "https://redhat-cop.github.io/automation-good-practices/"
-
-- name: "Ansible Development - Best Practices"
-  desc: "Best Practices from Ansible"
-  src: "https://docs.ansible.com/ansible/2.8/user_guide/playbooks_best_practices.html"
-
 - name: "Ansible and YAML"
   desc: "Common things we see and do with YAML"
   src: "https://developers.redhat.com/learn/ansible/yaml-essentials-ansible"
