@@ -1,3 +1,59 @@
 - name: "Ansible Development - Good Practices"
   desc: "Good Practices from Consulting"
   src: "https://redhat-cop.github.io/automation-good-practices/"
+
+AAP Docs
+  https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/2.5
+
+AAP
+  New in 2.5: https://developers.redhat.com/blog/2024/10/01/whats-new-red-hat-ansible-automation-platform-25
+  Lifecycle: https://access.redhat.com/support/policy/updates/ansible-automation-platform
+  Scaling API: https://www.ansible.com/blog/scaling-automation-controller-for-api-driven-workloads
+  Bulk API: https://www.ansible.com/blog/bulk-api-in-automation-controller
+  Constructed Inventories: https://www.ansible.com/blog/how-to-use-the-new-constructed-inventory-feature-in-aap-2.4
+
+Event Driven Ansible (EDA)
+
+  Intro: https://www.ansible.com/blog/event-driven-ansible-is-here
+  Self-paced Lab: https://www.redhat.com/en/engage/event-driven-ansible-20220907
+  Full Repo Example: https://github.com/kubealex/event-driven-automation
+  Rulebook Docs: https://ansible.readthedocs.io/projects/rulebook/en/latest/
+  EDA Docs: https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html-single/using_automation_decisions/index
+	
+  EDA Examples
+    Insights: https://www.ansible.com/blog/red-hat-insights-collection-for-event-driven-ansible
+	  NetOps: https://www.ansible.com/blog/addressing-netops-issues-with-event-driven-ansible
+	  ChatOps: https://www.ansible.com/blog/event-driven-ansible-chatops-from-chat-to-action
+		  Demo: https://www.youtube.com/watch?v=Dj7dhZdnRIY
+		  Code: https://github.com/nmartins0611/eda_chatops_blog
+	  Windows: https://www.ansible.com/blog/fact-gathering-with-event-driven-ansible-and-ai
+		  Demo: https://www.youtube.com/watch?v=0vQACe3shW0
+	  GitOps: https://www.youtube.com/watch?v=Bb51DftLbPE
+
+Lightspeed AI
+	 Intro: https://www.ansible.com/blog/welcome-to-the-ansible-lightspeed-technical-preview
+	 Demo: https://www.youtube.com/watch?v=Ty2d-nlnZPQ
+
+——————
+
+Ansible Development:
+
+  Ansible-Lint
+    Intro: https://ansible.readthedocs.io/projects/lint/philosophy/#history-and-the-future
+	  Custom Rules: https://www.ansible.com/blog/creating-custom-rules-for-ansible-lint
+
+  Ansible Builder:
+	  Intro: https://www.ansible.com/blog/unlocking-efficiency-harnessing-the-capabilities-of-ansible-builder-3.0
+	  Guide: https://www.patsbytes.net/articles/ansible_builder/	
+
+  Execution Environments:
+	  Guide: https://github.com/ansiblejunky/ansible-execution-environment
+
+  Collections:
+	  Guide: https://www.patsbytes.net/articles/ansible_collections/
+		
+  VSCode:
+	  Guide: https://www.patsbytes.net/articles/ansible_development/
+	
+
+
