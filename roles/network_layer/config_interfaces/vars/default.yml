@@ -1,1 +1,2 @@
-#Default catch-all for devices without a variable file
+# Default catch-all for devices without a variable file
+# Using structured var dir instead
