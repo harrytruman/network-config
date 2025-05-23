@@ -1,11 +1,11 @@
 [ios]
-10.217.130.91 ansible_ssh_private_key_file=/home/ec2-user/.ssh/aws-lab ansible_username=ec2-user
+10.217.130.911
 
-#[ios:vars]
-#ansible_network_os=ios
+[ios:vars]
+ansible_network_os=ios
 
 [nxos]
-10.217.130.92 ansible_ssh_private_key_file=/home/ec2-user/.ssh/aws-lab ansible_username=ec2-user
+10.217.130.925
 
-#[nxos:vars]
-#ansible_network_os=nxos
+[nxos:vars]
+ansible_network_os=nxos
