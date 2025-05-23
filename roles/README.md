@@ -65,13 +65,13 @@ A good naming standard opens the door to integrating inventory variables into ho
   {{ logger }}/{{ ansible_hostname }}-{{ ansible_date_time.date }}.log
 ```
 
-## Passing Variables to Ansible Playbooks and Tower Jobs
+## Passing Variables to Ansible Playbooks and AAP Jobs
 With our initial set of inventory variables defined, we can now begin thinking about how to use these to create logic and conditionals in our playbooks. We can pass through vars to create dynamic playbook runs.
 
 ```
-ansible-playbook config_aaa.yaml --extra-vars site=s2
+ansible-playbook config_aaa.yaml --extra-vars="site=s2"
 
 OR
 
-tower-cli job launch --job-template=1054 --extra-vars="ansible_host=ios”
+awx-cli job launch --job-template=1054 --extra-vars="ansible_host=ios”
 ```
