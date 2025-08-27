@@ -24,7 +24,7 @@ ansible_username     username
 ansible_password     password
 ```
 
-I *highly* recommend [vaulting your passwords/keys/creds](https://docs.ansible.com/ansible/latest/user_guide/vault.html#creating-encrypted-variables) instead of storing them plaintext! My inventories usually start like this:
+Note: It's *highly* recommended to [vault your passwords/keys/creds](https://docs.ansible.com/ansible/latest/user_guide/vault.html#creating-encrypted-variables) instead of storing them plaintext! My inventories usually start like this:
 
 ```
 [all]
@@ -75,13 +75,41 @@ rhel-dc2-idm
 [linux:vars]
 ansible_become=yes
 ansible_become_method=enable
-ansible_network_os=linux # overwriting this for my custom Facts Machine roles
 ansible_os_family=RedHat
 ```
 
 --------------
 
-### Fact Collection and Config Parsing
+### Building Your Network OS Groups
+
+The easist way to define your network inventory groups is to use `ansible_network_os` variable. Internally, Ansible uses this single, simple variable to identify how to run those corresponding playbooks.
+
+Start at the inventory level, first and foremost. In the above inventory example, you'll note that each network inventory group has a unique value defined. E.g., `ansible_network_os=ios`
+
+Next, your `groupvars` should reflect the OS value. Example:
+```
+groupvars:
+  - all
+  - ios
+  - nxos
+  - f5
+  - nokia
+```
+
+And finally, you tie your roles and playbooks together by naming them accordingly; ran by a top-level playbook that will run a playbook like this: `{{ ansible_network_os=ios}}.yml`
+
+As an example, this playbook is a `main.yml` file that 
+```
+- name: "include {{ ansible_network_os }} tasks"
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files: "{{ ansible_network_os }}.yml"
+```
+
+You can see the full list of `ansible_network_os` options available here:
+https://docs.ansible.com/ansible/latest/network/user_guide/platform_index.html#settings-by-platform
+
+## Fact Collection and Config Parsing
 
 Ansible's native fact gathering can be invoked by setting `gather_facts: true` in your top level playbook. And every major networking vendor has fact modules that you can use in a playbook task: `ios_facts`, `eos_facts`, `nxos_facts`, `junos_facts`, etc...
 
