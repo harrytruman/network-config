@@ -1,0 +1,65 @@
+---
+argument_specs:
+  main:
+    short_description: Auto-generated specs for network_backup role - main entry point
+    description:
+      - Automatically generated argument specification for the network_backup role.
+      - 'Entry point: main'
+      - 'Includes task files: {{ item }}'
+  aireos:
+    short_description: Auto-generated specs for network_backup role - aireos entry point
+    description:
+      - Automatically generated argument specification for the network_backup role.
+      - 'Entry point: aireos'
+  aruba:
+    short_description: Auto-generated specs for network_backup role - aruba entry point
+    description:
+      - Automatically generated argument specification for the network_backup role.
+      - 'Entry point: aruba'
+  eos:
+    short_description: Auto-generated specs for network_backup role - eos entry point
+    description:
+      - Automatically generated argument specification for the network_backup role.
+      - 'Entry point: eos'
+  fortimgr:
+    short_description: Auto-generated specs for network_backup role - fortimgr entry point
+    description:
+      - Automatically generated argument specification for the network_backup role.
+      - 'Entry point: fortimgr'
+    options:
+      vdom:
+        description: Variable used in fortimgr entry point
+        type: str
+        required: true
+        version_added: 1.0.0
+  ios:
+    short_description: Auto-generated specs for network_backup role - ios entry point
+    description:
+      - Automatically generated argument specification for the network_backup role.
+      - 'Entry point: ios'
+  iosxr:
+    short_description: Auto-generated specs for network_backup role - iosxr entry point
+    description:
+      - Automatically generated argument specification for the network_backup role.
+      - 'Entry point: iosxr'
+  junos:
+    short_description: Auto-generated specs for network_backup role - junos entry point
+    description:
+      - Automatically generated argument specification for the network_backup role.
+      - 'Entry point: junos'
+  linux:
+    short_description: Auto-generated specs for network_backup role - linux entry point
+    description:
+      - Automatically generated argument specification for the network_backup role.
+      - 'Entry point: linux'
+  nxos:
+    short_description: Auto-generated specs for network_backup role - nxos entry point
+    description:
+      - Automatically generated argument specification for the network_backup role.
+      - 'Entry point: nxos'
+  vyos:
+    short_description: Auto-generated specs for network_backup role - vyos entry point
+    description:
+      - Automatically generated argument specification for the network_backup role.
+      - 'Entry point: vyos'
+...
