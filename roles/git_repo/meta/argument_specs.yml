@@ -1,0 +1,111 @@
+---
+argument_specs:
+  main:
+    short_description: Auto-generated specs for git_repo role - main entry point
+    description:
+      - Automatically generated argument specification for the git_repo role.
+      - 'Entry point: main'
+    options:
+      git_branch_merge:
+        description: 'Git branch name (default: ''master'')'
+        type: str
+        default: master
+        version_added: 1.0.0
+      git_branch_test:
+        description: 'Test mode or configuration (default: ''test'')'
+        type: str
+        default: test
+        version_added: 1.0.0
+      git_dir:
+        description: 'destination file path (used in task) (default: ''/tmp/testrepo'')'
+        type: path
+        default: /tmp/testrepo
+        version_added: 1.0.0
+      git_password:
+        description: 'Password for authentication (default: ''password'')'
+        type: str
+        default: password
+        version_added: 1.0.0
+      git_username:
+        description: 'Username for authentication (default: ''test'')'
+        type: str
+        default: test
+        version_added: 1.0.0
+      playbook_dir:
+        description: Variable used in main entry point
+        type: str
+        required: true
+        version_added: 1.0.0
+  add_file:
+    short_description: Auto-generated specs for git_repo role - add_file entry point
+    description:
+      - Automatically generated argument specification for the git_repo role.
+      - 'Entry point: add_file'
+    options:
+      git_branch_merge:
+        description: 'Git branch name (default: ''master'')'
+        type: str
+        default: master
+        version_added: 1.0.0
+      git_branch_test:
+        description: 'Test mode or configuration (default: ''test'')'
+        type: str
+        default: test
+        version_added: 1.0.0
+      git_dir:
+        description: 'destination file path (used in task) (default: ''/tmp/testrepo'')'
+        type: path
+        default: /tmp/testrepo
+        version_added: 1.0.0
+      git_password:
+        description: 'Password for authentication (default: ''password'')'
+        type: str
+        default: password
+        version_added: 1.0.0
+      git_username:
+        description: 'Username for authentication (default: ''test'')'
+        type: str
+        default: test
+        version_added: 1.0.0
+      gitpassword:
+        description: Variable used in add_file entry point
+        type: str
+        required: true
+        version_added: 1.0.0
+      gitusername:
+        description: Variable used in add_file entry point
+        type: str
+        required: true
+        version_added: 1.0.0
+  promote:
+    short_description: Auto-generated specs for git_repo role - promote entry point
+    description:
+      - Automatically generated argument specification for the git_repo role.
+      - 'Entry point: promote'
+    options:
+      git_branch_merge:
+        description: 'Git branch name (default: ''master'')'
+        type: str
+        default: master
+        version_added: 1.0.0
+      git_branch_test:
+        description: 'Test mode or configuration (default: ''test'')'
+        type: str
+        default: test
+        version_added: 1.0.0
+      git_dir:
+        description: 'destination file path (used in task) (default: ''/tmp/testrepo'')'
+        type: path
+        default: /tmp/testrepo
+        version_added: 1.0.0
+      git_password:
+        description: 'Password for authentication (default: ''password'')'
+        type: str
+        default: password
+        version_added: 1.0.0
+      git_username:
+        description: 'Username for authentication (default: ''test'')'
+        type: str
+        default: test
+        version_added: 1.0.0
+...

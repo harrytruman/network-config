@@ -1,0 +1,154 @@
+---
+argument_specs:
+  main:
+    short_description: Auto-generated specs for network_state_mgmt role - main entry point
+    description:
+      - Automatically generated argument specification for the network_state_mgmt role.
+      - 'Entry point: main'
+      - 'Includes task files: {{ ansible_network_os }}'
+    options:
+      interface_config:
+        description: Network interface (list with default item) (defined in vars)
+        type: list
+        default: &id001
+          - interface: port-channel20.670
+            description: ansible
+            ip_address: '{{ pc_ip_address }}'
+            mode: layer3
+            enabled: true
+            vlans: 670
+            encapsulation: dot1q
+            echo_rx_interval: 50
+            interval:
+              - tx: 300
+              - min_rx: 300
+              - multiplier: 3
+            members:
+              - member: GigabitEthernet10
+                mode: auto
+        elements: dict
+        version_added: 1.0.0
+      site:
+        description: Variable used in main entry point
+        type: str
+        required: true
+        version_added: 1.0.0
+      vlan_config:
+        description: Configuration settings (list with default item) (defined in vars)
+        type: list
+        default: &id002
+          - vlan_id: 670
+            vlan_name: test
+        elements: dict
+        version_added: 1.0.0
+      zone:
+        description: Variable used in main entry point
+        type: str
+        required: true
+        version_added: 1.0.0
+  ios:
+    short_description: Auto-generated specs for network_state_mgmt role - ios entry point
+    description:
+      - Automatically generated argument specification for the network_state_mgmt role.
+      - 'Entry point: ios'
+    options:
+      channel:
+        description: Variable used in ios entry point
+        type: str
+        required: true
+        version_added: 1.0.0
+      interface_config:
+        description: Network interface (list with default item) (defined in vars)
+        type: list
+        default: *id001
+        elements: dict
+        version_added: 1.0.0
+      vlan_config:
+        description: Configuration settings (list with default item) (defined in vars)
+        type: list
+        default: *id002
+        elements: dict
+        version_added: 1.0.0
+  ios_shutdown:
+    short_description: Auto-generated specs for network_state_mgmt role - ios_shutdown entry point
+    description:
+      - Automatically generated argument specification for the network_state_mgmt role.
+      - 'Entry point: ios_shutdown'
+    options:
+      interface_config:
+        description: Network interface (list with default item) (defined in vars)
+        type: list
+        default: *id001
+        elements: dict
+        version_added: 1.0.0
+      vlan_config:
+        description: Configuration settings (list with default item) (defined in vars)
+        type: list
+        default: *id002
+        elements: dict
+        version_added: 1.0.0
+  nxos:
+    short_description: Auto-generated specs for network_state_mgmt role - nxos entry point
+    description:
+      - Automatically generated argument specification for the network_state_mgmt role.
+      - 'Entry point: nxos'
+    options:
+      channel:
+        description: Variable used in nxos entry point
+        type: str
+        required: true
+        version_added: 1.0.0
+      interface_config:
+        description: Network interface (list with default item) (defined in vars)
+        type: list
+        default: *id001
+        elements: dict
+        version_added: 1.0.0
+      vlan_config:
+        description: Configuration settings (list with default item) (defined in vars)
+        type: list
+        default: *id002
+        elements: dict
+        version_added: 1.0.0
+  nxos_shutdown:
+    short_description: Auto-generated specs for network_state_mgmt role - nxos_shutdown entry point
+    description:
+      - Automatically generated argument specification for the network_state_mgmt role.
+      - 'Entry point: nxos_shutdown'
+    options:
+      interface_config:
+        description: Network interface (list with default item) (defined in vars)
+        type: list
+        default: *id001
+        elements: dict
+        version_added: 1.0.0
+      vlan_config:
+        description: Configuration settings (list with default item) (defined in vars)
+        type: list
+        default: *id002
+        elements: dict
+        version_added: 1.0.0
+  nxos_vpc:
+    short_description: Auto-generated specs for network_state_mgmt role - nxos_vpc entry point
+    description:
+      - Automatically generated argument specification for the network_state_mgmt role.
+      - 'Entry point: nxos_vpc'
+    options:
+      endswith:
+        description: Variable used in nxos_vpc entry point
+        type: str
+        required: true
+        version_added: 1.0.0
+      interface_config:
+        description: Network interface (list with default item) (defined in vars)
+        type: list
+        default: *id001
+        elements: dict
+        version_added: 1.0.0
+      vlan_config:
+        description: Configuration settings (list with default item) (defined in vars)
+        type: list
+        default: *id002
+        elements: dict
+        version_added: 1.0.0
+...
