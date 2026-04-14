@@ -1,6 +1,7 @@
 # author: Michael Mahemoff - @mahemoff
 # source: https://gist.github.com/mahemoff/3c498b762af2c320835913093a19e966
 # desc: This is a terrific example of how to inspect a mount point, determine usage, free space, etc., and do something if it exceeds your threshold.
+---
 
 - set_fact:
     mount: "{{ ansible_mounts | first }}"
