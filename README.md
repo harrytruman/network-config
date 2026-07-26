@@ -196,6 +196,15 @@ And if you want to restore these configs, just grab the most recent backup file:
     src: /var/tmp/backup/{{ ansible_network_os }}-{{inventory_hostname}}.cfg
 ```
 
+Another option to restore a config is to pull the last cached fact for the device. This is a great use case for rolling out some changes, validating and having a rollback if the validation fails.
+
+This variable is stored as "ansible_net_config" and contains the entire running config:
+
+```
+- name: restore config
+   ios_config:
+    src: "{{ ansible_net_config }}"
+```
 --------------
 
 ### Configs, Commands, and Templates
@@ -223,6 +232,129 @@ However, you may eventually run into a situation where you need to add/remove AA
 
 Ansible's [Network Resource Modules](https://docs.ansible.com/ansible/latest/network/user_guide/network_resource_modules.html) are the solution to managing device states across different devices and different device types. NRMs already have the logic built in to know how config properties need to be orchestrated in which specific ways, and these modules know how to run the behind-the-scenes commands that get you the desired configuration state.
 
+For a deep dive into Resource Modules, my colleague [Trishna did a wonderful talk at Ansiblefest 2019](https://www.ansible.com/deep-dive-into-ansible-network-resource-module).
+
+
+### Blocks and Error Handling
+
+#### Blocks
+
+There comes a time in a playbook where you want to have Ansible execute multiple tasks based off of a condition such as "if this variable exists". 
+
+Below is an example how many people do this starting out:
+
+```
+- name: Configure Interface Settings
+  cisco.nxos.nxos_interfaces:
+    config: "{{ port_config }}"
+    state: replaced
+  when: interface_config is defined
+
+- name: Configure Port Channels
+  cisco.nxos.nxos_lag_interfaces:
+    config: "{{ portchannel_config }}"
+    state: replaced
+  when: interface_config is defined
+
+- name: Configure VLANs on Trunk Interfaces
+  cisco.nxos.nxos_l2_interfaces:
+    config: "{{ trunk_config }}"
+    state: replaced
+  when: interface_config is defined
+
+- name: Configure VLANs on Access Interfaces
+  cisco.nxos.nxos_l2_interfaces:
+    config: "{{ access_config }}"
+    state: replaced
+  when: interface_config is defined
+    
+ ```
+ 
+ Notice the "when: interface_config is defined" after each task. This get's repetitve and makes the playbook messy, especially if you have multiple other tasks that apply to the conditional statemtent.
+ 
+Enter the [Block and Rescue](https://docs.ansible.com/ansible/latest/user_guide/playbooks_blocks.html) operations.
+ 
+Let's take a look at an example that uses block to consolidate these tasks:
+
+```
+
+- name: Configure Cisco NXOS Interfaces
+  block:
+    - name: Configure Interface Settings
+      cisco.nxos.nxos_interfaces:
+        config: "{{ port_config }}"
+        state: replaced
+
+    - name: Configure Port Channels
+      cisco.nxos.nxos_lag_interfaces:
+        config: "{{ portchannel_config }}"
+        state: replaced
+
+    - name: Configure VLANs on Trunk Interfaces
+      cisco.nxos.nxos_l2_interfaces:
+        config: "{{ trunk_config }}"
+        state: replaced
+
+    - name: Configure VLANs on Access Interfaces
+      cisco.nxos.nxos_l2_interfaces:
+        config: "{{ access_config }}"
+        state: replaced
+  when: interface_config is defined
+```
+
+Now the block of tasks only execute if the "interface_config" variable is defined, simple right?
+
+#### Error Handling
+
+Now that we covered Blocks let's discuss Rescue as well. If you are familiar with Python think of this as try/except where you can perform a check or task on the try block and catch any errors and handle the output or action in the except block.
+
+Let's take a really simple example of configuring a VLAN with an incorrect VLAN ID. We are doing this intentionally to break the task:
+
+```
+---
+- name: Configure VLANS
+  hosts: nexus1
+  gather_facts: no
+
+  vars:
+    vlans:
+      - name: DEV
+        vlan_id: "10"
+      - name: INVALID
+        vlan_id: "ABC"
+
+  tasks:
+    - name: Configure Cisco NXOS VLANs
+      block:
+        - name: Configure VLANs Settings
+          nxos_vlans:
+            config: "{{ vlans }}"
+            state: merged
+
+      rescue:
+        - name: Debug VLANs for troubleshooting
+          debug:
+            msg: "Error configuring VLANs for host {{ inventory_hostname }}, here are the VLANs that were specified:\n {{ vlans }}"
+```
+
+Here is the output, as expected the task broke because the VLAN "ABC" is not an integer:
+
+```
+TASK [Configure VLANs Settings] *****************************************************************************************************************************************************************
+fatal: [nexus1]: FAILED! => changed=false 
+  msg: 'argument vlan_id is of type <type ''str''> found in ''config''. and we were unable to convert to int: <type ''str''> cannot be converted to an int'
+
+TASK [Debug VLANs for troubleshooting] *****************************************************************************************************************************************************************
+ok: [nexus1] => 
+  msg: |-
+    Error configuring VLANs for host nexus1, here are the VLANs that were specified:
+     [{'name': 'DEV', 'vlan_id': '10'}, {'name': 'INVALID', 'vlan_id': 'ABC'}]
+     
+PLAY RECAP *****************************************************************************************************************************************************************
+nexus1                     : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=1    ignored=0   
+````
+
+One thing to keep in mind is that the task above will show up as OK and not failed.
 For a practical example, here’s an interface template:
 
 ```
