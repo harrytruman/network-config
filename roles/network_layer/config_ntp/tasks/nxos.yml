@@ -1,0 +1,10 @@
+---
+- name: Configure NXOS NTP Servers
+  nxos_ntp:
+    provider: "{{provider}}"
+    server: "{{ item }}"
+    state: present
+    vrf_name: management
+    source_int: mgmt0
+    prefer: disabled
+  loop: "{{ site[zone] }}"

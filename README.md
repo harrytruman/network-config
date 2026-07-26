@@ -13,17 +13,18 @@ This repo is an introduction to building a network automation framework:
 
 ## Getting Started
 
-### Network Inventory
+### Setup An Inventory
 
-At a minimum, Ansible needs an [inventory file](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html) with these details to run against network hosts:
+At a minimum, Ansible needs an [inventory file](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html) with these details to run against OS or network hosts:
 ```
 ansible_hostname     hostname_fqdn
 ansible_network_os   ios/nxos/etc
+ansible_os_family    RedHat/Ubuntu/Windows/etc
 ansible_username     username
 ansible_password     password
 ```
 
-I *highly* recommend [vaulting your passwords/keys/creds](https://docs.ansible.com/ansible/latest/user_guide/vault.html#creating-encrypted-variables) instead of storing them plaintext! My inventories usually start like this:
+Note: It's *highly* recommended to [vault your passwords/keys/creds](https://docs.ansible.com/ansible/latest/user_guide/vault.html#creating-encrypted-variables) instead of storing them plaintext! My inventories usually start like this:
 
 ```
 [all]
@@ -33,6 +34,8 @@ ios-dc1-swt
 ios-dc2-swt
 nxos-dc1-rtr
 nxos-dc2-rtr
+rhel-dc1-idm
+rhel-dc2-idm
 
 [all:vars]
 ansible_connection=network_cli
@@ -64,11 +67,49 @@ nxos-dc2-rtr
 ansible_become=yes
 ansible_become_method=enable
 ansible_network_os=nxos
+
+[linux]
+rhel-dc1-idm
+rhel-dc2-idm
+
+[linux:vars]
+ansible_become=yes
+ansible_become_method=enable
+ansible_os_family=RedHat
 ```
 
 --------------
 
-### Fact Collection and Config Parsing
+### Building Your Network OS Groups
+
+The easist way to define your network inventory groups is to use `ansible_network_os` variable. Internally, Ansible uses this single, simple variable to identify how to run those corresponding playbooks.
+
+Start at the inventory level, first and foremost. In the above inventory example, you'll note that each network inventory group has a unique value defined. E.g., `ansible_network_os=ios`
+
+Next, your `groupvars` should reflect the OS value. Example:
+```
+groupvars:
+  - all
+  - ios
+  - nxos
+  - f5
+  - nokia
+```
+
+And finally, you tie your roles and playbooks together by naming them accordingly; ran by a top-level playbook that will run a playbook like this: `{{ ansible_network_os=ios}}.yml`
+
+As an example, this playbook is a `main.yml` file that 
+```
+- name: "include {{ ansible_network_os }} tasks"
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files: "{{ ansible_network_os }}.yml"
+```
+
+You can see the full list of `ansible_network_os` options available here:
+https://docs.ansible.com/ansible/latest/network/user_guide/platform_index.html#settings-by-platform
+
+## Fact Collection and Config Parsing
 
 Ansible's native fact gathering can be invoked by setting `gather_facts: true` in your top level playbook. And every major networking vendor has fact modules that you can use in a playbook task: `ios_facts`, `eos_facts`, `nxos_facts`, `junos_facts`, etc...
 
@@ -90,7 +131,7 @@ Or at the task level:
       gather_subset: all
 ```
 
-Either way, this is how you start down the path to true Config-to-Code!
+Regardless of which you prefer, Ansible will give you all the facts about your network devices. This is how you start down the path to true Config-to-Code!
 
 ```
 ansible_facts:
@@ -135,6 +176,8 @@ Ansible Facts can be cached too! Options include local file, memcached, Redis, a
 
 The combination of using network facts and fact caching can allow you to poll existing, in-memory data rather than parsing numerous additional commands to constantly check/refresh the device's running config.
 
+--------------
+
 ### Backups and Restores
 
 I personally consider device backups part of the fact collection process. If you're already connecting to a device and parsing its config, you might as well make a backup too. In the same time that Ansible is parsing config lines, you can easily have it dump the full running-config to a backup location of any kind -- local file, external share, git repo, etc...
@@ -162,6 +205,7 @@ This variable is stored as "ansible_net_config" and contains the entire running 
    ios_config:
     src: "{{ ansible_net_config }}"
 ```
+--------------
 
 ### Configs, Commands, and Templates
 
@@ -178,7 +222,9 @@ interface port-channel66.{{ vlan_id }}
 
 Once your vars and templates are setup, you can determine where you want the config output staged. At that point, you're ready to generate a template and push commands!
 
-### Config versus State Management - Config to Code
+--------------
+
+### Config versus State Management - Infrastructure as Code
 
 Although templates are quick and easy to create or convert, at the end of the day, you'll ultimately be responsible for determining how/when/where certain changes are being made. If you're managing devices like cattle, this may well be the easiest approach to get started with.
 
@@ -309,3 +355,88 @@ nexus1                     : ok=1    changed=0    unreachable=0    failed=0    s
 ````
 
 One thing to keep in mind is that the task above will show up as OK and not failed.
+For a practical example, here’s an interface template:
+
+```
+interface_config:
+- interface: Ethernet1/1
+  description: ansible_managed-Te0/1/2
+  enabled: True
+  mode: trunk
+  portchannel_id: 100
+
+- interface: Ethernet1/2
+  enabled: False
+
+- interface: port-channel100
+  description: vPC PeerLink
+  mode: trunk
+  enabled: True
+  vpc_peerlink: True
+  members:
+    - member: Ethernet1/1
+      mode: active
+    - member: Ethernet1/36
+      mode: active
+```
+
+#### Code to Config!
+Using the new network resource modules, we simply define our interface properties, and Ansible will figure out the rest.
+
+```
+- name: Configure Interface Settings
+  nxos_interfaces:
+    config:
+      name: "{{ item['interface'] }}"
+      description: "{{ item['description'] }}"
+      enabled: "{{ item['enabled'] }}"
+      mode: "{% if 'ip_address' in item %}layer3{% else %}layer2{% endif %}"
+    state: replaced
+  loop: "{{ interface_config }}"
+  when: (interface_config is defined and (item['enabled'] == True))
+```
+
+In the example above, the new interface modules will look at an interface config template and determine if it needs to be enabled. If so, it will loop through each interface and begin setting those config values. You’ll do the same sort of thing for your VLANs/Trunks, VPCs, Port Channels, etc…
+
+```
+- name: Configure Port Channels
+  nxos_lag_interfaces:
+    config:
+      - name: "{{ item['interface'] }}"
+        members: "{{ item['members'] }}"
+      state: replaced
+  loop: "{{ interface_config }}"
+  when: ('port-channel' in item['interface'] and ('members' in item))
+```
+
+And if the `nxos_interfaces` configs looks familiar, that’s because they are! It’s the same thing as what you would get from `nxos_facts` parsing the interfaces section:
+
+```
+- name: gather nxos facts
+  nxos_facts: 
+  gather_subset: interfaces
+```
+
+#### Config to Code!
+If you do it right, you can now take interface facts and pass them right back into Ansible as configuration properties!
+
+```
+  ansible_facts:
+  ansible_net_fqdn: rtr2
+  ansible_net_gather_subset:
+  - interfaces
+  ansible_net_hostname: rtr2
+  ansible_net_serialnum: D01E1309…
+  ansible_net_system: nxos
+  ansible_net_model: 93180yc-ex
+  ansible_net_version: 14.22.0F
+  ansible_network_resources:
+    interfaces:
+    - name: Ethernet1/1
+      enabled: true
+      mode: trunk
+    - name: Ethernet1/2
+      enabled: false 
+```
+
+For a deep dive into Network Resource Modules, my colleague [Trishna did a wonderful talk at Ansiblefest 2019](https://www.ansible.com/deep-dive-into-ansible-network-resource-module).

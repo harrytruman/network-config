@@ -1,0 +1,31 @@
+#name: Ansible Lint
+
+#on: [push, pull_request]
+#on:
+#  push:
+#    branches:
+#      - main
+
+#jobs:
+
+#  pre-commit:
+
+#    runs-on: ubuntu-latest
+
+#    steps:
+#    - uses: actions/checkout@v3
+#    - uses: actions/setup-python@v3
+#    - uses: pre-commit/action@v3.0.0
+
+
+#  build:
+  
+#    runs-on: ubuntu-latest
+
+#    steps:
+    # Important: This sets up your GITHUB_WORKSPACE environment variable
+#    - uses: actions/checkout@v2
+
+#    - name: Lint Ansible Playbook
+      # replace "main" with any valid ref
+#      uses: ansible-community/ansible-lint-action@main

@@ -1,0 +1,71 @@
+---
+version: 3
+
+build_arg_defaults:
+  ANSIBLE_GALAXY_CLI_COLLECTION_OPTS: '--upgrade'
+
+dependencies:
+  python_interpreter:
+    python_path: /usr/bin/python3.12
+  galaxy:
+    collections:
+      # Foundation for automating Ansible, AAP, and Config-as-Code for it all.
+      - name: ansible.controller
+      - name: ansible.eda
+      - name: ansible.hub
+      - name: ansible.platform
+      - name: ansible.posix
+      - name: infra.aap_configuration
+      - name: infra.aap_utilities
+      - name: kubernetes.core
+      - name: ansible.utils
+      # Windows and Azure
+      - name: ansible.windows
+      - name: community.general
+      - name: community.windows
+      - name: azure.azcollection
+      # Network Devices
+      - name: f5networks.f5_modules
+      - name: cisco.ios
+      - name: cisco.nxos
+      - name: cisco.ios-xr
+      - name: arista.eos
+      - name: junipernetworks.junos
+  python:
+    - selinux
+    - dnspython
+    - psutil
+    - netaddr
+    # begin custom python
+
+  system:
+    - findutils [platform:rpm]
+    - systemd-devel [platform:rpm]
+    - python3.12-devel [platform:rpm]
+    - gcc [platform:rpm]
+
+images:
+  base_image:
+    name: registry.redhat.io/ansible-automation-platform-27/ee-minimal-rhel9:2.16
+
+options:
+  package_manager_path: /usr/bin/microdnf
+
+additional_build_files:
+  - src: /etc/ansible/ansible.cfg
+    dest: configs
+#  - src: /opt/exec_envs/hub_certs/aap2_7_ca.cert
+#    dest: configs
+
+additional_build_steps:
+  prepend_galaxy:
+    - ADD _build/configs/ansible.cfg ${HOME}/.ansible.cfg
+    - ADD _build/configs/aap26_ca.cert /etc/pki/ca-trust/source/anchors/aap27_ca.cert
+
+#  example for dev on windows
+#  append_final: |
+#    ENV ACCEPT_EULA=Y
+#    RUN curl -o /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/rhel/9/prod.repo && \
+#        microdnf -y install powershell azure-cli mssql-tools18 unixODBC-devel && \
+#        microdnf clean all && \
+#        rm -rf /var/{cache,log} /var/lib/{dnf,rhsm}

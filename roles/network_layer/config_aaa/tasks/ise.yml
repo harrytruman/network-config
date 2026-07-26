@@ -1,0 +1,57 @@
+- name: Attempt to create Cisco ISE entries
+  block:
+    - name: Create Cisco ISE Entries
+      uri:
+        url: "https://10.14.128.169:9060/ers/config/networkdevice/"
+        validate_certs: false
+        method: POST
+        user: net_plat
+        password: "{{ net_plat_password }}"
+        body_format: json
+        body: "{{ lookup('template', 'files/ise_ansible_network_os.j2') }}"
+        use_proxy: no
+        status_code: 201
+      delegate_to: localhost
+      ignore_errors: no
+      tags: ISE
+
+
+  rescue:
+     - name: Get ISE Entry REF ID
+       uri:
+         url: "https://s1z2pdmgiseauth1.pd.gp:9060/ers/config/networkdevice?filter=name.EQ.{{inventory_hostname}}"
+         validate_certs: false
+         method: GET
+         user: net_plat
+         password: "{{ net_plat_password }}"
+         use_proxy: no
+         status_code: 200
+         return_content: yes
+         headers:
+           Accept: "application/json"
+       register: ise_refid
+       delegate_to: localhost
+       ignore_errors: no
+       tags: ISE
+
+     - name: Set ISE Reference ID as Fact
+       set_fact:
+         ise_reference_id: "{{item}}"
+       loop: "{{ ise_refid | json_query('json.SearchResult.resources[*].id') }}"
+       tags: ISE
+       delegate_to: localhost
+    
+     - name: Update Cisco ISE Entries
+       uri:
+         url: "https://10.14.128.169:9060/ers/config/networkdevice/{{ise_reference_id}}"
+         validate_certs: false
+         method: PUT
+         user: net_plat
+         password: "{{ net_plat_password }}"
+         body_format: json
+         body: "{{ lookup('template', 'files/ise_ansible_network_os.j2') }}"
+         use_proxy: no
+         status_code: 200
+       delegate_to: localhost
+       ignore_errors: no
+       tags: ISE

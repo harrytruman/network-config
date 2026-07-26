@@ -1,0 +1,20 @@
+router bgp {{ bgp_as }}
+ bgp router-id {{ bgp_router_id }}
+ bgp log-neighbor-changes
+ {% for network in bgp_networks %}
+ network {{ network | ipaddr('network') }} mask {{ network | ipaddr('netmask') }}
+ {% endfor %}
+ {% for network in bgp_agg_addresses %}
+ aggregate-address {{ network | ipaddr('network') }} {{ network | ipaddr('netmask') }} summary-only
+ {% endfor %}
+ {% for redistribute in bgp_redistribute %}
+ redistribute {{ redistribute['name'] }} route-map {{ redistribute['route_map'] }}
+ {% endfor %}
+ {% for neighbor in bgp_neighbors %}
+ neighbor {{ neighbor['neighbor'] }} remote-as {{ neighbor['remote_as'] }}
+ neighbor {{ neighbor['neighbor'] }} password {{ neighbor['password'] }}
+ neighbor {{ neighbor['neighbor'] }} fall-over bfd
+ {% if neighbor['route_map'] %}
+ neighbor {{ neighbor['neighbor'] }} route-map {{ neighbor['route_map']['name'] }} {{ neighbor['route_map']['direction'] }}
+ {% endif %}
+ {% endfor %}

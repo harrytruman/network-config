@@ -1,0 +1,14 @@
+---
+- debug:
+    msg: " {{ ansible_role_names }} - {{ ansible_play_name }} - {{ playbook_dir }}"
+
+- debug:
+    msg: "{{ ansible_facts }}"
+
+#- name: clone git repo
+#  git:
+#    repo: https://{{ git_username | urlencode }}:{{ git_password }}@github.com/harrytruman
+#    dest: "{{ git_dir }}"
+#    update: yes
+#    version: master
+

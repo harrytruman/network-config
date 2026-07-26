@@ -1,0 +1,14 @@
+---
+argument_specs:
+  main:
+    short_description: Auto-generated specs for network_config_generator role - main entry point
+    description:
+      - Automatically generated argument specification for the network_config_generator role.
+      - 'Entry point: main'
+    options:
+      ansible_network_os:
+        description: 'destination file path (used in template) (default: ''ios'')'
+        type: str
+        default: ios
+        version_added: 1.0.0
+...

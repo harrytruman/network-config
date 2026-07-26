@@ -1,0 +1,11 @@
+---
+- name: Shut down unused interfaces
+  nxos_interfaces:
+    config:
+      - name: "{{ item['interface'] }}"
+        enabled: "{{ item['enabled'] }}"
+        mode: layer2
+    state: merged
+  loop: "{{ interface_config }}"
+  when: 
+    - (interface_config is defined and (item['enabled'] is not defined or item['enabled'] == False))

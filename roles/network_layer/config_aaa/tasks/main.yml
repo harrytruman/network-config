@@ -1,0 +1,9 @@
+---
+
+#- name: Set ASR Fact
+#  set_fact:
+#    ise_device_type: asr
+#  when: asr in model_number
+
+- name: "include {{ ansible_network_os }} tasks"
+  include_tasks: "{{ ansible_network_os }}.yml"

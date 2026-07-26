@@ -1,0 +1,21 @@
+---
+# defaults file for config_aaa
+
+ise_servers:
+  s1:
+    - "10.14.128.169"
+    - "10.14.128.170"
+  s2:
+    - "10.14.128.169"
+    - "10.14.128.170"
+  d1:
+    - "10.14.128.169"
+    - "10.14.128.170"
+
+ise_os_lookup:
+  f5: f5
+  nxos: SWITCH#NXOS
+  asr: Router#ASR
+  asa: FIREWALL#ASA
+  ios: SWITCH#IOS
+  panos: FIREWALL#PALOALTO

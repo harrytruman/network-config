@@ -1,0 +1,46 @@
+---
+- name: Generate ISE TACACS Key
+  set_fact:
+    ise_pass: "{{ lookup('password', '/dev/null length=18 chars=ascii_letters,digits') }}"
+    location: "{{ inventory_hostname[0:2] | upper }}"
+    ise_servers: "{{ site }}_ise_servers"
+
+- name: Ensure TACACS+ feature is enabled
+  nxos_feature:
+    feature: "tacacs+"
+    state: enabled
+
+- name: Create TACACS Server Settings
+  nxos_aaa_server:
+    server_type: "tacacs"
+    server_timeout: "8"
+    deadtime: "20"
+
+- name: Create TACACS Servers
+  nxos_aaa_server_host:
+    state: "present"
+    server_type: "tacacs"
+    key: "{{ ise_pass }}"
+    encrypt_type: "0"
+    address: "{{ item }}"
+  with_items: "{{ ise_servers[site] }}"
+
+- name: Create ISE AAA Group
+  nxos_config:
+    lines: 
+        - "server {{ item }}"
+        - "use-vrf management"
+        - "source-interface mgmt0"
+    parents: aaa group server tacacs+ ISE
+  with_items: "{{ ise_servers[site] }}"
+
+#- name: Include ISE Tasks
+#  include_tasks: ise.yml
+
+#- name: Deploy final AAA configuration
+#  nxos_config:
+#    lines:
+#      - aaa accounting default group ISE
+#      - aaa authentication login default group ISE
+#      - aaa authentication login default fallback error local
+#      - aaa authentication login invalid-username-log

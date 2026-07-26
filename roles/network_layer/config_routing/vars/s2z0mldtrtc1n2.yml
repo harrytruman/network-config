@@ -1,0 +1,17 @@
+ospf_process_id: 1
+
+ospf_router_id: 10.33.47.101
+
+ospf_priority: 254
+
+ospf_key: ABC123
+
+ospf_area:
+  - network: 10.33.0.8 0.0.0.7
+    area: 0
+  - network: 10.33.32.0 0.0.0.3
+    area: 0
+
+ospf_interfaces:
+  - port-channel1.502
+  - port-channel2

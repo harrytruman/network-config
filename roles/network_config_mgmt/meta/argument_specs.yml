@@ -1,0 +1,14 @@
+---
+argument_specs:
+  main:
+    short_description: Auto-generated specs for network_config_mgmt role - main entry point
+    description:
+      - Automatically generated argument specification for the network_config_mgmt role.
+      - 'Entry point: main'
+    options:
+      ansible_network_os:
+        description: Configuration value for ansible network os
+        type: str
+        default: undefined
+        version_added: 1.0.0
+...

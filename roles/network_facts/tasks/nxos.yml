@@ -1,10 +1,10 @@
 ---
 - name:
-  nxos_facts:
+  cisco.nxos.nxos_facts:
     # compatible with old facts modules (<= 2.8)
-    gather_subset: min
+    #gather_subset: min
     # facts from network resource modules (2.9+)
-    gather_network_resources: all
+    #gather_network_resources: all
 
 #- name: collect output from nxos device
 #  nxos_command:

@@ -1,0 +1,6 @@
+{"NetworkDevice": {
+            "name": "{{ inventory_hostname }}",
+            "NetworkDeviceIPList": [{"mask": 32, "ipaddress": "{{ ansible_host }}" }],
+            "NetworkDeviceGroupList": ["Location#All Locations#{{ location }}", "IPSEC#Is IPSEC Device#No", "Device Type#All Device Types#f5"],
+            "tacacsSettings": {"sharedSecret": "{{ ise_pass }}", "connectModeOptions": "ON_LEGACY"},
+            "profileName": "Cisco"}}
